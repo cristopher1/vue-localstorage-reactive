@@ -1,7 +1,7 @@
 {
-  "name": "vue-web-storage-api-reactive",
+  "name": "vue-localstorage-reactive",
   "version": "1.0.0",
-  "description": "Wrapper to use reactive localStorage in Vue 3",
+  "description": "Wrapper to use localStorage reactive in Vue 3",
   "main": "./src/index.js",
   "peerDependencies": {
     "vue": "^3.0.0"
@@ -13,12 +13,11 @@
     "prettier": "^3.0.2"
   },
   "scripts": {
-    "test": "test",
     "format": "prettier --write src/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cristopher1/vue-web-storage-api-reactive.git"
+    "url": "git+https://github.com/cristopher1/vue-localstorage-reactive.git"
   },
   "keywords": [
     "reactive",
@@ -27,7 +26,7 @@
   "author": "Cristopher Luis Jiménez Meza",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cristopher1/vue-web-storage-api-reactive/issues"
+    "url": "https://github.com/cristopher1/vue-localstorage-reactive/issues"
   },
-  "homepage": "https://github.com/cristopher1/vue-web-storage-api-reactive#readme"
+  "homepage": "https://github.com/cristopher1/vue-localstorage-reactive#readme"
 }
