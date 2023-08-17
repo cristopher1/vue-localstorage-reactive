@@ -11,7 +11,7 @@ export default {
   install(app, options) {
     const reactiveLocalStorageOptions = {
       useRefStorage: true,
-      useLoadDataFromLocalStorage: false,
+      useLoadDataFromLocalStorage: true,
       useRemoveItemFromLocalStorage: false,
       useAddItemFromLocalStorage: false,
       ...options,
