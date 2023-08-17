@@ -20,6 +20,7 @@
     "url": "git+https://github.com/cristopher1/vue-localstorage-reactive.git"
   },
   "keywords": [
+    "vue",
     "reactive",
     "localStorage"
   ],
