@@ -2,7 +2,7 @@
   "name": "vue-localstorage-reactive",
   "version": "1.0.0",
   "description": "Wrapper to use localStorage reactive in Vue 3",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
   "peerDependencies": {
     "vue": "^3.0.0"
   },
