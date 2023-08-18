@@ -7,12 +7,20 @@
     "vue": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.22.10",
+    "@babel/core": "^7.22.10",
+    "@babel/preset-env": "^7.22.10",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-node-resolve": "^15.2.0",
+    "@rollup/plugin-terser": "^0.4.3",
     "eslint": "^8.47.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-vue": "^9.17.0",
-    "prettier": "^3.0.2"
+    "prettier": "^3.0.2",
+    "rollup": "^3.28.0"
   },
   "scripts": {
+    "build": "rollup --config",
     "format": "prettier --write src/"
   },
   "repository": {
