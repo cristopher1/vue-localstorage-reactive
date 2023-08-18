@@ -15,19 +15,17 @@ export function createReactiveStorage(webStorage, config) {
 
   if (useLoadDataFromLocalStorage) {
     const onLoad =
-      ReactiveStorageListenerFactory.createOnLoadReactiveLocalStorageListener(reactiveLocalStorage)
+      ReactiveStorageListenerFactory.createLoadReactiveLocalStorageListener(reactiveLocalStorage)
     window.addEventListener('load', onLoad)
   }
   if (useRemoveItemFromLocalStorage) {
     const onRemoveItem =
-      ReactiveStorageListenerFactory.createOnRemoveItemFromLocalStorageListener(
-        reactiveLocalStorage,
-      )
+      ReactiveStorageListenerFactory.createRemoveItemFromLocalStorageListener(reactiveLocalStorage)
     window.addEventListener('storage', onRemoveItem)
   }
   if (useAddItemFromLocalStorage) {
     const onAddItem =
-      ReactiveStorageListenerFactory.createOnAddItemFromLocalStorageListener(reactiveLocalStorage)
+      ReactiveStorageListenerFactory.createAddItemFromLocalStorageListener(reactiveLocalStorage)
     window.addEventListener('storage', onAddItem)
   }
   return reactiveLocalStorage
