@@ -15,7 +15,7 @@ class ReactiveStorageListenerFactory {
   }
   static createLoadReactiveLocalStorageListener(reactiveWebStorage) {
     return () => {
-      reactiveWebStorage.loadDataFromWebStorage()
+      reactiveWebStorage.loadDataFromLocalStorage()
     }
   }
 }

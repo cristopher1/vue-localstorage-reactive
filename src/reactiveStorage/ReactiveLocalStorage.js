@@ -42,7 +42,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     this.#webStorage.clear()
   }
 
-  loadDataFromWebStorage() {
+  loadDataFromLocalStorage() {
     const webStorage = this.#webStorage
     for (let index = 0; index < webStorage.length; ++index) {
       const key = webStorage.key(index)
