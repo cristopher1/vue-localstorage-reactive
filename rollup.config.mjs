@@ -6,12 +6,12 @@ export default defineConfig({
   input: 'src/index.js',
   output: [
     {
-      file: 'dist/cjs/index.js',
+      file: 'dist/index.js',
       format: 'cjs',
       sourcemap: true,
     },
     {
-      file: 'dist/mjs/index.mjs',
+      file: 'dist/index.mjs',
       format: 'es',
       sourcemap: true,
     },
