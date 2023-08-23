@@ -4,7 +4,7 @@ export class ReactiveStorage {
   #reactiveStorage
 
   constructor(reactiveStorage) {
-    if (this.constructor == ReactiveStorage) {
+    if (this.constructor === ReactiveStorage) {
       throw new Error('This is an abstract class')
     }
     if (!isReactive(reactiveStorage) && !isRef(reactiveStorage)) {

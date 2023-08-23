@@ -6,6 +6,7 @@ class ReactiveStorageListenerFactory {
       }
     }
   }
+
   static createAddItemFromLocalStorageListener(reactiveWebStorage) {
     return ({ key, newValue }) => {
       if (newValue) {
@@ -13,6 +14,7 @@ class ReactiveStorageListenerFactory {
       }
     }
   }
+
   static createLoadReactiveLocalStorageListener(reactiveWebStorage) {
     return () => {
       reactiveWebStorage.loadDataFromLocalStorage()
