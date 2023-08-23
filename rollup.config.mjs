@@ -7,12 +7,12 @@ export default defineConfig({
   input: 'src/index.js',
   output: [
     {
-      file: 'dist/cjs/index.cjs',
+      file: 'dist/cjs/index.js',
       format: 'cjs',
       sourcemap: true,
     },
     {
-      file: 'dist/cjs/index.min.cjs',
+      file: 'dist/cjs/index.min.js',
       format: 'cjs',
       sourcemap: true,
       plugins: [terser()],
