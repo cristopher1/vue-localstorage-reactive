@@ -2,11 +2,11 @@
   "name": "vue-localstorage-reactive",
   "version": "1.0.0",
   "description": "Wrapper to use localStorage reactive in Vue 3",
-  "main": "./dist/cjs/index.js",
+  "main": "./dist/index.js",
   "type": "commonjs",
   "exports": {
-    "import": "./dist/mjs/index.mjs",
-    "require": "./dist/cjs/index.js"
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js"
   },
   "peerDependencies": {
     "vue": "^3.0.0"
@@ -21,11 +21,16 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-vue": "^9.17.0",
     "prettier": "^3.0.2",
+    "rimraf": "^5.0.1",
     "rollup": "^3.28.0"
   },
   "scripts": {
-    "build": "rollup --config",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "lint": "eslint --ext .js --ignore-path .gitignore src/",
+    "fix": "eslint --fix --ext .js --ignore-path .gitignore src/",
+    "clean": "rimraf dist",
+    "bundle": "rollup --config",
+    "build": "npm run clean && npm run bundle"
   },
   "repository": {
     "type": "git",
