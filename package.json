@@ -28,7 +28,7 @@
     "rollup": "^3.28.0"
   },
   "scripts": {
-    "format": "prettier --write src/",
+    "format": "prettier --write .",
     "lint": "eslint --ext .js,.mjs .",
     "fix": "eslint --fix --ext .js,.mjs .",
     "clean": "rimraf dist",
