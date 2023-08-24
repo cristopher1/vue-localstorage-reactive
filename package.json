@@ -29,8 +29,8 @@
   },
   "scripts": {
     "format": "prettier --write src/",
-    "lint": "eslint --ext .js --ignore-path .gitignore src/",
-    "fix": "eslint --fix --ext .js --ignore-path .gitignore src/",
+    "lint": "eslint --ext .js .",
+    "fix": "eslint --fix --ext .js .",
     "clean": "rimraf dist",
     "bundle": "rollup --config",
     "build": "npm run clean && npm run bundle"
