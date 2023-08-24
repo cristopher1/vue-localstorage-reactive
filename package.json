@@ -29,8 +29,8 @@
   },
   "scripts": {
     "format": "prettier --write src/",
-    "lint": "eslint --ext .js .",
-    "fix": "eslint --fix --ext .js .",
+    "lint": "eslint --ext .js,.mjs .",
+    "fix": "eslint --fix --ext .js,.mjs .",
     "clean": "rimraf dist",
     "bundle": "rollup --config",
     "build": "npm run clean && npm run bundle"
