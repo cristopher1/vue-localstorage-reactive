@@ -33,7 +33,8 @@
     "fix": "eslint --fix --ext .js,.mjs .",
     "clean": "rimraf dist",
     "bundle": "rollup --config",
-    "build": "npm run clean && npm run bundle"
+    "prebuild": "npm run clean",
+    "build": "npm run bundle"
   },
   "repository": {
     "type": "git",
