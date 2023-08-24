@@ -35,7 +35,7 @@
     "fix": "eslint --fix --ext .js,.mjs .",
     "clean": "rimraf dist",
     "bundle": "rollup --config",
-    "prebuild": "npm run clean",
+    "prebuild": "npm run lint && npm run format && npm run clean",
     "build": "npm run bundle",
     "prepare": "husky install"
   },
