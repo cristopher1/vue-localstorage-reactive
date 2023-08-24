@@ -23,6 +23,8 @@
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-n": "^16.0.2",
     "eslint-plugin-promise": "^6.1.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
     "prettier": "^3.0.2",
     "rimraf": "^5.0.1",
     "rollup": "^3.28.0"
@@ -34,7 +36,8 @@
     "clean": "rimraf dist",
     "bundle": "rollup --config",
     "prebuild": "npm run clean",
-    "build": "npm run bundle"
+    "build": "npm run bundle",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
