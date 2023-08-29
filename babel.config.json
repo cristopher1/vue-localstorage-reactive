@@ -1,3 +1,17 @@
 {
-  "presets": ["@babel/preset-env"]
+  "env": {
+    "es5": {
+      "presets": ["@babel/preset-env"]
+    },
+    "es6": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": "supports es6-module"
+          }
+        ]
+      ]
+    }
+  }
 }
