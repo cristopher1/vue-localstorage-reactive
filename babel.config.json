@@ -1,6 +1,6 @@
 {
   "env": {
-    "es5": {
+    "commonJS": {
       "presets": ["@babel/preset-env"],
       "plugins": [
         [
@@ -11,7 +11,7 @@
         ]
       ]
     },
-    "es6": {
+    "ESmodules": {
       "presets": [
         [
           "@babel/preset-env",
