@@ -11,12 +11,13 @@
   "scripts": {
     "init:husky": "husky install",
     "init": "npm run init:husky",
-    "format": "prettier --write .",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "lint": "eslint --ext .js,.mjs .",
     "lint:fix": "npm run lint -- --fix",
     "clean": "rimraf dist",
     "bundle": "rollup --config",
-    "prebuild": "npm run lint && npm run format && npm run clean",
+    "prebuild": "npm run lint && npm run format:fix && npm run clean",
     "build": "npm run bundle"
   },
   "repository": {
