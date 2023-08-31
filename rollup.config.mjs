@@ -24,7 +24,10 @@ const OUTPUT_DIR = 'dist'
 const OUTPUT_CJS_FILE = getOutputFile(OUTPUT_DIR, 'index', CJS)
 const OUTPUT_MJS_FILE = getOutputFile(OUTPUT_DIR, 'index', MJS)
 
+// getBabelOutputPlugin configuration
 const BABEL_CONFIG_FILE = path.resolve('.', 'babel.config.json')
+const ENV_NAME_COMMONJS = 'commonJS'
+const ENV_NAME_ES_MODULES = 'ESmodules'
 
 export default defineConfig({
   input: INPUT_FILE,
@@ -36,7 +39,7 @@ export default defineConfig({
       plugins: [
         getBabelOutputPlugin({
           configFile: BABEL_CONFIG_FILE,
-          envName: 'es5',
+          envName: ENV_NAME_COMMONJS,
         }),
       ],
     },
@@ -47,7 +50,7 @@ export default defineConfig({
       plugins: [
         getBabelOutputPlugin({
           configFile: BABEL_CONFIG_FILE,
-          envName: 'es6',
+          envName: ENV_NAME_ES_MODULES,
         }),
       ],
     },
