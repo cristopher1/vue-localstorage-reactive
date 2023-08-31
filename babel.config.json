@@ -16,7 +16,9 @@
         [
           "@babel/preset-env",
           {
-            "targets": "supports es6-module"
+            "targets": {
+              "esmodules": true
+            }
           }
         ]
       ],
