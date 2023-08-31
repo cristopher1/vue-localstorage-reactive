@@ -27,7 +27,8 @@
   "keywords": [
     "vue",
     "reactive",
-    "localStorage"
+    "localStorage",
+    "plugin"
   ],
   "author": "Cristopher Luis Jiménez Meza",
   "license": "MIT",
