@@ -11,10 +11,12 @@ const getOutputFile = (path, name, infoExtension) => {
 const CJS = {
   extension: 'js',
   format: 'cjs',
+  babelEnvName: 'commonJS',
 }
 const MJS = {
   extension: 'mjs',
   format: 'es',
+  babelEnvName: 'ESmodules',
 }
 
 const INPUT_FILE = 'src/index.js'
@@ -26,8 +28,6 @@ const OUTPUT_MJS_FILE = getOutputFile(OUTPUT_DIR, 'index', MJS)
 
 // getBabelOutputPlugin configuration
 const BABEL_CONFIG_FILE = path.resolve('.', 'babel.config.json')
-const ENV_NAME_COMMONJS = 'commonJS'
-const ENV_NAME_ES_MODULES = 'ESmodules'
 
 export default defineConfig({
   input: INPUT_FILE,
@@ -39,7 +39,7 @@ export default defineConfig({
       plugins: [
         getBabelOutputPlugin({
           configFile: BABEL_CONFIG_FILE,
-          envName: ENV_NAME_COMMONJS,
+          envName: CJS.babelEnvName,
         }),
       ],
     },
@@ -50,7 +50,7 @@ export default defineConfig({
       plugins: [
         getBabelOutputPlugin({
           configFile: BABEL_CONFIG_FILE,
-          envName: ENV_NAME_ES_MODULES,
+          envName: MJS.babelEnvName,
         }),
       ],
     },
