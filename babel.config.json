@@ -1,7 +1,15 @@
 {
   "env": {
     "es5": {
-      "presets": ["@babel/preset-env"]
+      "presets": ["@babel/preset-env"],
+      "plugins": [
+        [
+          "@babel/plugin-transform-runtime",
+          {
+            "corejs": 3
+          }
+        ]
+      ]
     },
     "es6": {
       "presets": [
@@ -9,6 +17,14 @@
           "@babel/preset-env",
           {
             "targets": "supports es6-module"
+          }
+        ]
+      ],
+      "plugins": [
+        [
+          "@babel/plugin-transform-runtime",
+          {
+            "corejs": 3
           }
         ]
       ]
