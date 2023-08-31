@@ -3,7 +3,7 @@ import { defineConfig } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 
-const getOutputFileName = (path, name, infoExtension) => {
+const getOutputFile = (path, name, infoExtension) => {
   return `${path}/${name}.${infoExtension.extension}`
 }
 
@@ -21,8 +21,8 @@ const INPUT_FILE = 'src/index.js'
 
 // Unminified transpiler files
 const OUTPUT_DIR = 'dist'
-const OUTPUT_CJS_FILE = getOutputFileName(OUTPUT_DIR, 'index', CJS)
-const OUTPUT_MJS_FILE = getOutputFileName(OUTPUT_DIR, 'index', MJS)
+const OUTPUT_CJS_FILE = getOutputFile(OUTPUT_DIR, 'index', CJS)
+const OUTPUT_MJS_FILE = getOutputFile(OUTPUT_DIR, 'index', MJS)
 
 const BABEL_CONFIG_FILE = path.resolve('.', 'babel.config.json')
 
