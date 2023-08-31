@@ -9,14 +9,15 @@
     "require": "./dist/index.js"
   },
   "scripts": {
+    "init:husky": "husky install",
+    "init": "npm run init:husky",
     "format": "prettier --write .",
     "lint": "eslint --ext .js,.mjs .",
-    "fix": "eslint --fix --ext .js,.mjs .",
+    "lint:fix": "npm run lint -- --fix",
     "clean": "rimraf dist",
     "bundle": "rollup --config",
     "prebuild": "npm run lint && npm run format && npm run clean",
-    "build": "npm run bundle",
-    "prepare": "husky install"
+    "build": "npm run bundle"
   },
   "repository": {
     "type": "git",
