@@ -14,6 +14,14 @@ module.exports = {
         sourceType: 'script',
       },
     },
+    {
+      env: {
+        node: true,
+      },
+      files: ['__tests__/**/*.test.js'],
+      extends: ['plugin:jest/recommended'],
+      plugins: ['jest'],
+    },
   ],
   parserOptions: {
     ecmaVersion: 'latest',
