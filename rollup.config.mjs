@@ -11,12 +11,12 @@ const getOutputFile = (path, name, infoExtension) => {
 const CJS = {
   extension: 'js',
   format: 'cjs',
-  babelEnvName: 'commonJS',
+  babelEnvName: 'buildCommonJS',
 }
 const MJS = {
   extension: 'mjs',
   format: 'es',
-  babelEnvName: 'ESmodules',
+  babelEnvName: 'buildESmodules',
 }
 
 const INPUT_FILE = 'src/index.js'
