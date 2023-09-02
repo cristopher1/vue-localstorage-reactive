@@ -1,6 +1,18 @@
 {
   "env": {
-    "commonJS": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "node": "current"
+            }
+          }
+        ]
+      ]
+    },
+    "buildCommonJS": {
       "presets": ["@babel/preset-env"],
       "plugins": [
         [
@@ -11,7 +23,7 @@
         ]
       ]
     },
-    "ESmodules": {
+    "buildESmodules": {
       "presets": [
         [
           "@babel/preset-env",
