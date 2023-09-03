@@ -23,7 +23,8 @@
     "bundle": "rollup --config",
     "prebuild": "npm run lint:build-stage && npm run format:build-stage:fix && npm run clean",
     "build": "npm run bundle",
-    "test": "jest"
+    "test": "jest",
+    "quality-check": "npm run format && npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
@@ -64,6 +65,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.3",
     "jest": "^29.6.4",
+    "jest-environment-jsdom": "^29.6.4",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.2",
     "rimraf": "^5.0.1",
