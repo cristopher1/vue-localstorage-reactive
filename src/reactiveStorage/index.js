@@ -3,21 +3,15 @@ import { ReactiveLocalStorage } from './ReactiveLocalStorage'
 import ReactiveStorageListenerFactory from './ReactiveStorageListener'
 
 export function createReactiveStorage(webStorage, config) {
-  const {
-    useRefStorage,
-    useLoadDataFromLocalStorage,
-    useRemoveItemFromLocalStorage,
-    useAddItemFromLocalStorage,
-  } = config
+  const { useRefStorage, useRemoveItemFromLocalStorage, useAddItemFromLocalStorage } = config
 
   const reactiveStorage = useRefStorage ? ref({}) : reactive({})
   const reactiveLocalStorage = new ReactiveLocalStorage(reactiveStorage, webStorage)
 
-  if (useLoadDataFromLocalStorage) {
-    const onLoad =
-      ReactiveStorageListenerFactory.createLoadReactiveLocalStorageListener(reactiveLocalStorage)
-    window.addEventListener('load', onLoad)
-  }
+  const onLoad =
+    ReactiveStorageListenerFactory.createLoadReactiveLocalStorageListener(reactiveLocalStorage)
+  window.addEventListener('load', onLoad)
+
   if (useRemoveItemFromLocalStorage) {
     const onRemoveItem =
       ReactiveStorageListenerFactory.createRemoveItemFromLocalStorageListener(reactiveLocalStorage)
