@@ -18,7 +18,7 @@ module.exports = {
       env: {
         node: true,
       },
-      files: ['__tests__/**/*.test.js'],
+      files: ['__tests__/**/*.js'],
       extends: ['plugin:jest/recommended'],
       plugins: ['jest'],
     },
