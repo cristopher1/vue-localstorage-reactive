@@ -1,6 +1,6 @@
 class ReactiveStorageListenerFactory {
   static createRemoveItemFromLocalStorageListener(reactiveWebStorage) {
-    return ({ key, newValue }) => {
+    return function removeItemFromLocalStorageListener({ key, newValue }) {
       if (!newValue) {
         reactiveWebStorage.removeItemFromEvent(key)
       }
@@ -8,7 +8,7 @@ class ReactiveStorageListenerFactory {
   }
 
   static createAddItemFromLocalStorageListener(reactiveWebStorage) {
-    return ({ key, newValue }) => {
+    return function addItemFromLocalStorageListener({ key, newValue }) {
       if (newValue) {
         reactiveWebStorage.setItemFromEvent(key, newValue)
       }
@@ -16,7 +16,7 @@ class ReactiveStorageListenerFactory {
   }
 
   static createLoadReactiveLocalStorageListener(reactiveWebStorage) {
-    return () => {
+    return function loadReactiveLocalStorageListener() {
       reactiveWebStorage.loadDataFromLocalStorage()
     }
   }
