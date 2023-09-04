@@ -8,7 +8,9 @@ export class ReactiveStorage {
       throw new Error('This is an abstract class')
     }
     if (!isReactive(reactiveStorage) && !isRef(reactiveStorage)) {
-      throw new Error('"reactiveStorage" parameter must be a reactive or ref object')
+      throw new Error(
+        '"reactiveStorage" parameter must be a reactive or ref object',
+      )
     }
     this.#reactiveStorage = reactiveStorage
   }

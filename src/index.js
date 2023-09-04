@@ -16,7 +16,10 @@ export default {
     }
     const reactiveWebStorage = {}
     const webStorage = window.localStorage
-    const reactiveLocalStorage = createReactiveStorage(webStorage, reactiveLocalStorageOptions)
+    const reactiveLocalStorage = createReactiveStorage(
+      webStorage,
+      reactiveLocalStorageOptions,
+    )
     reactiveWebStorage.localStorage = reactiveLocalStorage
     app.config.globalProperties.$reactiveWebStorage = reactiveWebStorage
   },
