@@ -26,7 +26,7 @@ export class ReactiveStorage {
 
   key(index) {
     const reactiveStorage = this.#obtainReactiveStorage(this.#reactiveStorage)
-    return Object.keys(reactiveStorage)[index]
+    return Object.keys(reactiveStorage)[index] ?? null
   }
 
   setItem(key, item) {
