@@ -23,8 +23,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     let value = super.getItem(key)
     if (!value && (value = this.#webStorage.getItem(key))) {
       try {
-        const parseValue = JSON.parse(value)
-        value = parseValue
+        value = JSON.parse(value)
       } catch (error) {
       } finally {
         super.setItem(key, value)
