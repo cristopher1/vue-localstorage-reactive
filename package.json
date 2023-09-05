@@ -23,7 +23,7 @@
     "bundle": "rollup --config",
     "prebuild": "npm run lint:build-stage && npm run format:build-stage:fix && npm run clean",
     "build": "npm run bundle",
-    "test": "jest",
+    "test": "jest --verbose",
     "quality-check": "npm run format && npm run lint && npm run test"
   },
   "repository": {
