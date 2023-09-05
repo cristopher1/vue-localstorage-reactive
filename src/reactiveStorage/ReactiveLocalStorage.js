@@ -1,3 +1,4 @@
+import { ReactiveLocalStorageError } from './Error'
 import { ReactiveStorage } from './ReactiveStorage'
 
 export class ReactiveLocalStorage extends ReactiveStorage {
@@ -5,7 +6,9 @@ export class ReactiveLocalStorage extends ReactiveStorage {
 
   constructor(reactiveStorage, webStorage) {
     if (!(webStorage instanceof Storage)) {
-      throw new Error('"webStorage" parameter must be instanceof Storage')
+      throw new ReactiveLocalStorageError(
+        '"webStorage" parameter must be instanceof Storage',
+      )
     }
     super(reactiveStorage)
     this.#webStorage = webStorage
@@ -13,6 +16,10 @@ export class ReactiveLocalStorage extends ReactiveStorage {
 
   get length() {
     return super.length
+  }
+
+  get reactiveStorage() {
+    return super.reactiveStorage
   }
 
   key(index) {
@@ -66,9 +73,5 @@ export class ReactiveLocalStorage extends ReactiveStorage {
 
   removeItemFromEvent(key) {
     super.removeItem(key)
-  }
-
-  getReactiveStorage() {
-    return super.getReactiveStorage()
   }
 }

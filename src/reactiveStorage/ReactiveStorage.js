@@ -1,3 +1,4 @@
+import { ReactiveStorageError } from './Error'
 import { isReactive, isRef } from 'vue'
 
 export class ReactiveStorage {
@@ -5,10 +6,10 @@ export class ReactiveStorage {
 
   constructor(reactiveStorage) {
     if (this.constructor === ReactiveStorage) {
-      throw new Error('This is an abstract class')
+      throw new ReactiveStorageError('This is an abstract class')
     }
     if (!isReactive(reactiveStorage) && !isRef(reactiveStorage)) {
-      throw new Error(
+      throw new ReactiveStorageError(
         '"reactiveStorage" parameter must be a reactive or ref object',
       )
     }
@@ -22,6 +23,10 @@ export class ReactiveStorage {
   get length() {
     const reactiveStorage = this.#obtainReactiveStorage(this.#reactiveStorage)
     return Object.keys(reactiveStorage).length
+  }
+
+  get reactiveStorage() {
+    return this.#reactiveStorage
   }
 
   key(index) {
@@ -51,9 +56,5 @@ export class ReactiveStorage {
     for (const key in reactiveStorage) {
       this.removeItem(key)
     }
-  }
-
-  getReactiveStorage() {
-    return this.#reactiveStorage
   }
 }
