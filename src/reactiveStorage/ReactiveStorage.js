@@ -16,12 +16,14 @@ export class ReactiveStorage {
     this.#reactiveStorage = reactiveStorage
   }
 
-  #obtainReactiveStorage(reactiveStorage) {
+  #obtainReactiveStorageValue(reactiveStorage) {
     return isRef(reactiveStorage) ? reactiveStorage.value : reactiveStorage
   }
 
   get length() {
-    const reactiveStorage = this.#obtainReactiveStorage(this.#reactiveStorage)
+    const reactiveStorage = this.#obtainReactiveStorageValue(
+      this.#reactiveStorage,
+    )
     return Object.keys(reactiveStorage).length
   }
 
@@ -30,29 +32,39 @@ export class ReactiveStorage {
   }
 
   key(index) {
-    const reactiveStorage = this.#obtainReactiveStorage(this.#reactiveStorage)
+    const reactiveStorage = this.#obtainReactiveStorageValue(
+      this.#reactiveStorage,
+    )
     return Object.keys(reactiveStorage)[index] ?? null
   }
 
   setItem(key, item) {
-    const reactiveStorage = this.#obtainReactiveStorage(this.#reactiveStorage)
+    const reactiveStorage = this.#obtainReactiveStorageValue(
+      this.#reactiveStorage,
+    )
     reactiveStorage[key] = item
   }
 
   getItem(key) {
-    const reactiveStorage = this.#obtainReactiveStorage(this.#reactiveStorage)
+    const reactiveStorage = this.#obtainReactiveStorageValue(
+      this.#reactiveStorage,
+    )
     return reactiveStorage[key]
   }
 
   removeItem(key) {
-    const reactiveStorage = this.#obtainReactiveStorage(this.#reactiveStorage)
+    const reactiveStorage = this.#obtainReactiveStorageValue(
+      this.#reactiveStorage,
+    )
     if (Object.prototype.hasOwnProperty.call(reactiveStorage, key)) {
       delete reactiveStorage[key]
     }
   }
 
   clear() {
-    const reactiveStorage = this.#obtainReactiveStorage(this.#reactiveStorage)
+    const reactiveStorage = this.#obtainReactiveStorageValue(
+      this.#reactiveStorage,
+    )
     for (const key in reactiveStorage) {
       this.removeItem(key)
     }
