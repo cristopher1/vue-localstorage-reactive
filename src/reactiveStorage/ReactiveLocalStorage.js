@@ -49,6 +49,9 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   }
 
   removeItem(key) {
+    if (typeof key !== 'string') {
+      throw new ReactiveLocalStorageError('"key" paramter must be a String')
+    }
     super.removeItem(key)
     this.#webStorage.removeItem(key)
   }
