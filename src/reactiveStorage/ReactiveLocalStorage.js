@@ -14,6 +14,18 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     this.#webStorage = webStorage
   }
 
+  #isValidIndex(index) {
+    if (typeof index !== 'number' || !Number.isInteger(index)) {
+      throw new ReactiveLocalStorageError('"index" parameter must be a Number')
+    }
+  }
+
+  #isValidKey(key) {
+    if (typeof key !== 'string') {
+      throw new ReactiveLocalStorageError('"key" parameter must be a String')
+    }
+  }
+
   get length() {
     return super.length
   }
@@ -23,10 +35,12 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   }
 
   key(index) {
+    this.#isValidIndex(index)
     return super.key(index)
   }
 
   getItem(key) {
+    this.#isValidKey(key)
     let value = super.getItem(key)
     if (!value && (value = this.#webStorage.getItem(key))) {
       try {
@@ -40,6 +54,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   }
 
   setItem(key, item) {
+    this.#isValidKey(key)
     super.setItem(key, item)
     if (typeof item === 'object') {
       this.#webStorage.setItem(key, JSON.stringify(item))
@@ -49,9 +64,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   }
 
   removeItem(key) {
-    if (typeof key !== 'string') {
-      throw new ReactiveLocalStorageError('"key" paramter must be a String')
-    }
+    this.#isValidKey(key)
     super.removeItem(key)
     this.#webStorage.removeItem(key)
   }
@@ -71,10 +84,12 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   }
 
   setItemFromEvent(key, item) {
+    this.#isValidKey(key)
     super.setItem(key, item)
   }
 
   removeItemFromEvent(key) {
+    this.#isValidKey(key)
     super.removeItem(key)
   }
 }
