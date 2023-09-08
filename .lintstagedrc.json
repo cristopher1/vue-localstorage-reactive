@@ -1,4 +1,4 @@
 {
-  "*.{js,mjs}": ["eslint --fix", "prettier --write"],
-  "*.{json}": ["prettier --write"]
+  "*.{js,mjs}": ["npm run lint:fix", "npm run format:fix"],
+  "*.{json}": ["npm run format:fix"]
 }
