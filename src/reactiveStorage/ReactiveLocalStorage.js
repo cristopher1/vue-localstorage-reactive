@@ -1,5 +1,6 @@
 import { ReactiveLocalStorageError } from './Error'
 import { ReactiveStorage } from './ReactiveStorage'
+import { serializer } from './Serializers/JSONSerializer'
 
 export class ReactiveLocalStorage extends ReactiveStorage {
   #webStorage
@@ -14,16 +15,28 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     this.#webStorage = webStorage
   }
 
-  #isValidIndex(index) {
-    if (typeof index !== 'number' || !Number.isInteger(index)) {
-      throw new ReactiveLocalStorageError('"index" parameter must be a Number')
-    }
+  #isInvalidSerializeData(data) {
+    const validTypes = ['string']
+    const type = typeof data
+    return validTypes.includes(type)
   }
 
-  #isValidKey(key) {
-    if (typeof key !== 'string') {
-      throw new ReactiveLocalStorageError('"key" parameter must be a String')
+  #parseData(value) {
+    let parseData = value
+    try {
+      parseData = serializer.parse(value)
+    } catch (error) {
+      if (!(error instanceof SyntaxError)) {
+        throw error
+      }
     }
+    return parseData
+  }
+
+  #serializeData(value) {
+    return this.#isInvalidSerializeData(value)
+      ? value
+      : serializer.serialize(value)
   }
 
   get length() {
@@ -35,36 +48,25 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   }
 
   key(index) {
-    this.#isValidIndex(index)
     return super.key(index)
   }
 
   getItem(key) {
-    this.#isValidKey(key)
     let value = super.getItem(key)
     if (!value && (value = this.#webStorage.getItem(key))) {
-      try {
-        value = JSON.parse(value)
-      } catch (error) {
-      } finally {
-        super.setItem(key, value)
-      }
+      value = this.#parseData(value)
+      super.setItem(key, value)
     }
     return value
   }
 
   setItem(key, item) {
-    this.#isValidKey(key)
     super.setItem(key, item)
-    if (typeof item === 'object') {
-      this.#webStorage.setItem(key, JSON.stringify(item))
-    } else {
-      this.#webStorage.setItem(key, item)
-    }
+    const serializedData = this.#serializeData(item)
+    this.#webStorage.setItem(key, serializedData)
   }
 
   removeItem(key) {
-    this.#isValidKey(key)
     super.removeItem(key)
     this.#webStorage.removeItem(key)
   }
@@ -84,12 +86,10 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   }
 
   setItemFromEvent(key, item) {
-    this.#isValidKey(key)
     super.setItem(key, item)
   }
 
   removeItemFromEvent(key) {
-    this.#isValidKey(key)
     super.removeItem(key)
   }
 }
