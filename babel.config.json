@@ -14,11 +14,13 @@
     },
     "buildCommonJS": {
       "presets": ["@babel/preset-env"],
+      "comments": false,
       "plugins": [
         [
           "@babel/plugin-transform-runtime",
           {
-            "corejs": 3
+            "corejs": 3,
+            "version": "^7.22.15"
           }
         ]
       ]
@@ -34,11 +36,13 @@
           }
         ]
       ],
+      "comments": false,
       "plugins": [
         [
           "@babel/plugin-transform-runtime",
           {
-            "corejs": 3
+            "corejs": 3,
+            "version": "^7.22.15"
           }
         ]
       ]
