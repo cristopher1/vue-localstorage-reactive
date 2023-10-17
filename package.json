@@ -16,8 +16,8 @@
   ],
   "scripts": {
     "init:husky": "husky install",
-    "init:documentation": "npx readme-md-generator -y",
-    "init": "npm run init:husky && npm run init:documentation",
+    "documentation:create": "npx readme-md-generator -y",
+    "init": "npm run init:husky",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "format:build-stage": "prettier --check src",

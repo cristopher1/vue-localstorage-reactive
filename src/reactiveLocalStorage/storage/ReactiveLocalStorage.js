@@ -1,11 +1,11 @@
 import { ReactiveLocalStorageError } from './Error'
 import { ReactiveStorage } from './ReactiveStorage'
-import { serializer } from './Serializers/JSONSerializer'
 
 export class ReactiveLocalStorage extends ReactiveStorage {
   #webStorage
+  #serializer
 
-  constructor(reactiveStorage, webStorage) {
+  constructor(reactiveStorage, webStorage, serializer) {
     if (!(webStorage instanceof Storage)) {
       throw new ReactiveLocalStorageError(
         '"webStorage" parameter must be instanceof Storage',
@@ -13,30 +13,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     }
     super(reactiveStorage)
     this.#webStorage = webStorage
-  }
-
-  #isInvalidSerializeData(data) {
-    const validTypes = ['string']
-    const type = typeof data
-    return validTypes.includes(type)
-  }
-
-  #parseData(value) {
-    let parseData = value
-    try {
-      parseData = serializer.parse(value)
-    } catch (error) {
-      if (!(error instanceof SyntaxError)) {
-        throw error
-      }
-    }
-    return parseData
-  }
-
-  #serializeData(value) {
-    return this.#isInvalidSerializeData(value)
-      ? value
-      : serializer.serialize(value)
+    this.serializer = serializer
   }
 
   get length() {
@@ -53,16 +30,19 @@ export class ReactiveLocalStorage extends ReactiveStorage {
 
   getItem(key) {
     let value = super.getItem(key)
-    if (!value && (value = this.#webStorage.getItem(key))) {
-      value = this.#parseData(value)
-      super.setItem(key, value)
+    if (!value) {
+      const valueObtainedFromWebStorage = this.#webStorage.getItem(key)
+      if (valueObtainedFromWebStorage) {
+        value = this.#serializer.parse(valueObtainedFromWebStorage)
+        super.setItem(key, value)
+      }
     }
     return value
   }
 
   setItem(key, item) {
     super.setItem(key, item)
-    const serializedData = this.#serializeData(item)
+    const serializedData = this.#serializer.serialize(item)
     this.#webStorage.setItem(key, serializedData)
   }
 

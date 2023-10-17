@@ -16,18 +16,6 @@ export class ReactiveStorage {
     this.#reactiveStorage = reactiveStorage
   }
 
-  #isValidIndex(index) {
-    if (typeof index !== 'number' || !Number.isInteger(index)) {
-      throw new ReactiveStorageError('"index" parameter must be a Number')
-    }
-  }
-
-  #isValidKey(key) {
-    if (typeof key !== 'string') {
-      throw new ReactiveStorageError('"key" parameter must be a String')
-    }
-  }
-
   #obtainReactiveStorageValue(reactiveStorage) {
     return isRef(reactiveStorage) ? reactiveStorage.value : reactiveStorage
   }
@@ -44,7 +32,6 @@ export class ReactiveStorage {
   }
 
   key(index) {
-    this.#isValidIndex(index)
     const reactiveStorage = this.#obtainReactiveStorageValue(
       this.#reactiveStorage,
     )
@@ -52,7 +39,6 @@ export class ReactiveStorage {
   }
 
   setItem(key, item) {
-    this.#isValidKey(key)
     const reactiveStorage = this.#obtainReactiveStorageValue(
       this.#reactiveStorage,
     )
@@ -60,7 +46,6 @@ export class ReactiveStorage {
   }
 
   getItem(key) {
-    this.#isValidKey(key)
     const reactiveStorage = this.#obtainReactiveStorageValue(
       this.#reactiveStorage,
     )
@@ -68,7 +53,6 @@ export class ReactiveStorage {
   }
 
   removeItem(key) {
-    this.#isValidKey(key)
     const reactiveStorage = this.#obtainReactiveStorageValue(
       this.#reactiveStorage,
     )
