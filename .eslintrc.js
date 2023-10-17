@@ -15,6 +15,14 @@ module.exports = {
       },
     },
     {
+      files: ['src/**/*.js'],
+      extends: ['plugin:jsdoc/recommended'],
+      plugins: ['jsdoc'],
+      rules: {
+        'jsdoc/tag-lines': 0,
+      },
+    },
+    {
       env: {
         node: true,
       },
@@ -27,6 +35,4 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: [],
-  rules: {},
 }
