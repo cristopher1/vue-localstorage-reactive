@@ -79,6 +79,7 @@
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.2",
     "prettier-plugin-jsdoc": "^1.1.1",
+    "readme-md-generator": "^1.0.0",
     "rimraf": "^5.0.1",
     "rollup": "^3.28.0",
     "rollup-plugin-dts": "^6.1.0",
