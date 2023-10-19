@@ -1,24 +1,16 @@
-import { faker } from './helpers'
-import { ReactiveLocalStorage } from '../src/reactiveLocalStorage/storage/ReactiveLocalStorage'
+import {
+  faker,
+  getDefaultSerializer,
+  getReactiveLocalStorageInstance,
+  localStorage,
+} from '../helpers'
 import {
   ReactiveLocalStorageError,
   ReactiveStorageError,
-} from '../src/reactiveLocalStorage/storage/Error'
+} from '../../src/reactiveLocalStorage/storage/Error'
 import { ref, reactive, isRef, isReactive } from 'vue'
 
-const { localStorage } = window
 const filePath = 'src/reactiveLocalStorage/storage/ReactiveLocalStorage.js'
-
-const getDefaultSerializer = () => ({
-  serialize: (...parameters) => JSON.stringify(...parameters),
-  parse: (...parameters) => JSON.parse(...parameters),
-})
-
-const getReactiveLocalStorageInstance = (
-  reactiveStorage,
-  webStorage,
-  serializer,
-) => new ReactiveLocalStorage(reactiveStorage, webStorage, serializer)
 
 const createArrayTestWithObjects = (nElement) => {
   const array = []
@@ -255,7 +247,7 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         expect(result).toEqual(expected)
         expect(result).toEqual(unserializedValue)
       })
-      it('Should override an object saved in reactiveLocalStorage when add a new object using the same key', () => {
+      it('Should override an object saved in reactiveLocalStorage when set a new object using the same key', () => {
         // Arrange
         const defaultSerializer = getDefaultSerializer()
         const key = faker.string.sample(50)
@@ -453,7 +445,7 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
       })
     })
     describe('(method) setItemFromEvent', () => {
-      it('Should add an object (Array)', () => {
+      it('Should set an object (Array)', () => {
         // Arrange
         const key = faker.string.sample(79)
         const expected = [
@@ -468,7 +460,7 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
 
         expect(result).toEqual(expected)
       })
-      it('Should override an object saved in reactiveLocalStorage when add a new object using the same key', () => {
+      it('Should override an object saved in reactiveLocalStorage when set a new object using the same key', () => {
         // Arrange
         const key = 'simpleObject'
         const initValue = {
@@ -569,7 +561,7 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
       })
     })
     describe('(method) setItem', () => {
-      it('Should add an object (Array)', () => {
+      it('Should set an object (Array)', () => {
         // Arrange
         const defaultSerializer = getDefaultSerializer()
         const key = faker.string.sample(35)
@@ -588,7 +580,7 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         expect(result).toEqual(expected)
         expect(result).toEqual(unserializedValue)
       })
-      it('Should override an object saved in reactiveLocalStorage when add a new object using the same key', () => {
+      it('Should override an object saved in reactiveLocalStorage when set a new object using the same key', () => {
         // Arrange
         const defaultSerializer = getDefaultSerializer()
         const key = faker.string.sample(45)
@@ -780,7 +772,7 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
       })
     })
     describe('(method) setItemFromEvent', () => {
-      it('Should add an object (simple object)', () => {
+      it('Should set an object (simple object)', () => {
         // Arrange
         const key = faker.string.sample()
         const expected = {
@@ -795,7 +787,7 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
 
         expect(result).toEqual(expected)
       })
-      it('Should override an object saved in reactiveLocalStorage when add a new object using the same key', () => {
+      it('Should override an object saved in reactiveLocalStorage when set a new object using the same key', () => {
         // Arrange
         const key = faker.string.sample(17)
         const initValue = {

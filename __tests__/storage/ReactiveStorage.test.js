@@ -1,8 +1,8 @@
-import { ReactiveStorage } from '../src/reactiveLocalStorage/storage/ReactiveStorage'
-import { ReactiveStorageError } from '../src/reactiveLocalStorage/storage/Error'
+import { ReactiveStorage } from '../../src/reactiveLocalStorage/storage/ReactiveStorage'
+import { ReactiveStorageError } from '../../src/reactiveLocalStorage/storage/Error'
 import { ref } from 'vue'
 
-const filePath = 'src/reactiveStorage/ReactiveStorage.js'
+const filePath = 'src/reactiveLocalStorage/storage/ReactiveStorage.js'
 
 describe(`class ReactiveStorage (${filePath})`, () => {
   describe('constructor', () => {
