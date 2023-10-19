@@ -13,7 +13,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     }
     super(reactiveStorage)
     this.#webStorage = webStorage
-    this.serializer = serializer
+    this.#serializer = serializer
   }
 
   get length() {
@@ -58,10 +58,12 @@ export class ReactiveLocalStorage extends ReactiveStorage {
 
   loadDataFromLocalStorage() {
     const webStorage = this.#webStorage
-    for (let index = 0; index < webStorage.length; ++index) {
+    const length = webStorage.length
+    for (let index = 0; index < length; ++index) {
       const key = webStorage.key(index)
       const value = webStorage.getItem(key)
-      super.setItem(key, value)
+      const unserializedValue = this.#serializer.parse(value)
+      super.setItem(key, unserializedValue)
     }
   }
 

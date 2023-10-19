@@ -49,12 +49,12 @@ export class ReactiveLocalStorageInstaller {
    * @param {App<Element>} app - Instance of createApp
    * @param {object} options - Configuration of this plugin
    */
-  install(app, options) {
+  install(app, options = {}) {
     const {
-      useRefStorage,
-      useRemoveItemFromLocalStorage,
-      useAddItemFromLocalStorage,
-      serializer,
+      useRefStorage = true,
+      useRemoveItemFromLocalStorage = false,
+      useAddItemFromLocalStorage = false,
+      serializer = null,
     } = options
 
     const reactiveStorage = this.#getReactiveStorage(useRefStorage)
