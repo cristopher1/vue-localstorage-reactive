@@ -1,19 +1,24 @@
-import { ReactiveLocalStorage } from '../../src/reactiveStorage/ReactiveLocalStorage'
+import { faker } from './helpers'
+import { ReactiveLocalStorage } from '../src/reactiveLocalStorage/storage/ReactiveLocalStorage'
 import {
   ReactiveLocalStorageError,
   ReactiveStorageError,
-} from '../../src/reactiveStorage/Error'
+} from '../src/reactiveLocalStorage/storage/Error'
 import { ref, reactive, isRef, isReactive } from 'vue'
-import { faker } from '@faker-js/faker'
 
 const { localStorage } = window
-const filePath = 'src/reactiveStorage/ReactiveLocalStorage.js'
+const filePath = 'src/reactiveLocalStorage/storage/ReactiveLocalStorage.js'
 
-faker.seed(100)
+const getDefaultSerializer = () => ({
+  serialize: (...parameters) => JSON.stringify(...parameters),
+  parse: (...parameters) => JSON.parse(...parameters),
+})
 
-const getReactiveLocalStorageInstance = (reactiveStorage, webStorage) => {
-  return new ReactiveLocalStorage(reactiveStorage, webStorage)
-}
+const getReactiveLocalStorageInstance = (
+  reactiveStorage,
+  webStorage,
+  serializer,
+) => new ReactiveLocalStorage(reactiveStorage, webStorage, serializer)
 
 const createArrayTestWithObjects = (nElement) => {
   const array = []
@@ -38,20 +43,20 @@ const addItemsInReactiveLocalStorage = (elements, reactiveLocalStorage) => {
   })
 }
 
-const getReactiveStorageInstance = (reactiveLocalStorage) => {
-  const reactiveStorage = reactiveLocalStorage.reactiveStorage
-  return isRef(reactiveStorage) ? reactiveStorage.value : reactiveStorage
-}
-
 describe(`class ReactiveLocalStorage (${filePath})`, () => {
   describe('constructor', () => {
     it('Should create a ReactiveLocalStorage object when the constructor is called using Storage and vue Ref instances', () => {
       // Arrange
       const refStorage = ref({})
+      const defaultSerializer = getDefaultSerializer()
 
       // Act
       const result = () =>
-        getReactiveLocalStorageInstance(refStorage, localStorage)
+        getReactiveLocalStorageInstance(
+          refStorage,
+          localStorage,
+          defaultSerializer,
+        )
 
       // Assert
       expect(result).not.toThrow()
@@ -60,11 +65,16 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
       // Arrange
       const refStorage = ref({})
       const notStorage = faker.string.sample(100)
+      const defaultSerializer = getDefaultSerializer()
       const expected = ReactiveLocalStorageError
 
       // Act
       const result = () =>
-        getReactiveLocalStorageInstance(refStorage, notStorage)
+        getReactiveLocalStorageInstance(
+          refStorage,
+          notStorage,
+          defaultSerializer,
+        )
 
       // Assert
       expect(result).toThrow(expected)
@@ -72,10 +82,15 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
     it('Should create a ReactiveLocalStorage object when the constructor is called using Storage and vue Reactive instances', () => {
       // Arrange
       const reactiveStorage = reactive({})
+      const defaultSerializer = getDefaultSerializer()
 
       // Act
       const result = () =>
-        getReactiveLocalStorageInstance(reactiveStorage, localStorage)
+        getReactiveLocalStorageInstance(
+          reactiveStorage,
+          localStorage,
+          defaultSerializer,
+        )
 
       // Assert
       expect(result).not.toThrow()
@@ -84,11 +99,16 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
       // Arrange
       const reactiveStorage = reactive({})
       const notStorage = faker.number.int()
+      const defaultSerializer = getDefaultSerializer()
       const expected = ReactiveLocalStorageError
 
       // Act
       const result = () =>
-        getReactiveLocalStorageInstance(reactiveStorage, notStorage)
+        getReactiveLocalStorageInstance(
+          reactiveStorage,
+          notStorage,
+          defaultSerializer,
+        )
 
       // Assert
       expect(result).toThrow(expected)
@@ -96,104 +116,19 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
     it('Should throw a ReactiveStorageError when the constructor is called using a Storage instance but not a vue Ref/Reactive instance', () => {
       // Arrange
       const notVueReactiveStorage = [1, 2, 3, 4, 5, 6, 7]
+      const defaultSerializer = getDefaultSerializer()
       const expected = ReactiveStorageError
 
       // Act
       const result = () =>
-        getReactiveLocalStorageInstance(notVueReactiveStorage, localStorage)
+        getReactiveLocalStorageInstance(
+          notVueReactiveStorage,
+          localStorage,
+          defaultSerializer,
+        )
 
       // Assert
       expect(result).toThrow(expected)
-    })
-  })
-  describe('(method) getItem', () => {
-    it('Should throw ReactiveStorageError if the "key" parameter is not a String', () => {
-      // Arrange
-      const key = true
-      const expectec = ReactiveStorageError
-      const reactiveStorage = ref({})
-      const reactiveLocalStorage = getReactiveLocalStorageInstance(
-        reactiveStorage,
-        localStorage,
-      )
-
-      // Act
-      const result = () => reactiveLocalStorage.getItem(key)
-
-      // Assert
-      expect(result).toThrow(expectec)
-    })
-  })
-  describe('(method) setItem', () => {
-    it('Should throw ReactiveStorageError if the "key" parameter is not a String', () => {
-      // Arrange
-      const key = [7]
-      const expectec = ReactiveStorageError
-      const reactiveStorage = reactive({})
-      const reactiveLocalStorage = getReactiveLocalStorageInstance(
-        reactiveStorage,
-        localStorage,
-      )
-
-      // Act
-      const result = () => reactiveLocalStorage.setItem(key)
-
-      // Assert
-      expect(result).toThrow(expectec)
-    })
-  })
-  describe('(method) removeItem', () => {
-    it('Should throw ReactiveStorageError if the "key" parameter is not a String', () => {
-      // Arrange
-      const key = {}
-      const expectec = ReactiveStorageError
-      const reactiveStorage = ref({})
-      const reactiveLocalStorage = getReactiveLocalStorageInstance(
-        reactiveStorage,
-        localStorage,
-      )
-
-      // Act
-      const result = () => reactiveLocalStorage.removeItem(key)
-
-      // Assert
-      expect(result).toThrow(expectec)
-    })
-  })
-  describe('(method) setItemFromEvent', () => {
-    it('Should throw ReactiveStorageError if the "key" parameter is not a String', () => {
-      // Arrange
-      const key = reactive({})
-      const expectec = ReactiveStorageError
-      const reactiveStorage = reactive({})
-      const reactiveLocalStorage = getReactiveLocalStorageInstance(
-        reactiveStorage,
-        localStorage,
-      )
-
-      // Act
-      const result = () => reactiveLocalStorage.setItemFromEvent(key)
-
-      // Assert
-      expect(result).toThrow(expectec)
-    })
-  })
-  describe('(method) removeItemFromEvent', () => {
-    it('Should throw ReactiveStorageError if the "key" parameter is not a String', () => {
-      // Arrange
-      const key = ref({})
-      const expectec = ReactiveStorageError
-      const reactiveStorage = ref({})
-      const reactiveLocalStorage = getReactiveLocalStorageInstance(
-        reactiveStorage,
-        localStorage,
-      )
-
-      // Act
-      const result = () => reactiveLocalStorage.removeItemFromEvent(key)
-
-      // Assert
-      expect(result).toThrow(expectec)
     })
   })
   describe('test an instance generated by constructor with parameters (vue Ref, Storage)', () => {
@@ -201,9 +136,11 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
 
     beforeEach(() => {
       const refStorage = ref({})
+      const defaultSerializer = getDefaultSerializer()
       reactiveLocalStorage = getReactiveLocalStorageInstance(
         refStorage,
         localStorage,
+        defaultSerializer,
       )
     })
     afterEach(() => {
@@ -216,12 +153,12 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         const expected = 0
 
         // Act
-        const reactiveLocalStorageResult = reactiveLocalStorage.length
-        const localStorageResult = localStorage.length
+        const result = reactiveLocalStorage.length
+        const localStorageLength = localStorage.length
 
         // Assert
-        expect(reactiveLocalStorageResult).toBe(expected)
-        expect(localStorageResult).toBe(expected)
+        expect(result).toBe(expected)
+        expect(localStorageLength).toBe(expected)
       })
       it('Should return 3 when reactiveLocalStorage contain 3 elements', () => {
         // Arrange
@@ -230,12 +167,12 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         addItemsInReactiveLocalStorage(data, reactiveLocalStorage)
 
         // Act
-        const reactiveLocalStorageResult = reactiveLocalStorage.length
-        const localStorageResult = localStorage.length
+        const result = reactiveLocalStorage.length
+        const localStorageLength = localStorage.length
 
         // Assert
-        expect(reactiveLocalStorageResult).toBe(expected)
-        expect(localStorageResult).toBe(expected)
+        expect(result).toBe(expected)
+        expect(localStorageLength).toBe(expected)
       })
     })
     describe('(getter) reactiveStorage', () => {
@@ -277,24 +214,9 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
       })
     })
     describe('(method) setItem', () => {
-      it('Should add a primitive value (String)', () => {
+      it('Should set an object (nested object)', () => {
         // Arrange
-        const key = faker.string.sample(20)
-        const expected = faker.string.sample(200)
-
-        // Act
-        reactiveLocalStorage.setItem(key, expected)
-
-        // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = localStorage.getItem(key)
-
-        expect(reactiveLocalStorageResult).toBe(expected)
-        expect(localStorageResult).toBe(expected)
-      })
-      it('Should add an object (nested object)', () => {
-        // Arrange
+        const defaultSerializer = getDefaultSerializer()
         const key = faker.string.sample(30)
         const expected = {
           key1: faker.string.sample(90),
@@ -324,15 +246,18 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.setItem(key, expected)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = JSON.parse(localStorage.getItem(key))
+        const result = reactiveLocalStorage.getItem(key)
+        const valueReturnedFromLocalStorage = localStorage.getItem(key)
+        const unserializedValue = defaultSerializer.parse(
+          valueReturnedFromLocalStorage,
+        )
 
-        expect(reactiveLocalStorageResult).toEqual(expected)
-        expect(localStorageResult).toEqual(expected)
+        expect(result).toEqual(expected)
+        expect(result).toEqual(unserializedValue)
       })
       it('Should override an object saved in reactiveLocalStorage when add a new object using the same key', () => {
         // Arrange
+        const defaultSerializer = getDefaultSerializer()
         const key = faker.string.sample(50)
         const initValue = {
           user: faker.internet.userName(),
@@ -349,12 +274,14 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.setItem(key, expected)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = JSON.parse(localStorage.getItem(key))
+        const result = reactiveLocalStorage.getItem(key)
+        const valueReturnedFromLocalStorage = localStorage.getItem(key)
+        const unserializedValue = defaultSerializer.parse(
+          valueReturnedFromLocalStorage,
+        )
 
-        expect(reactiveLocalStorageResult).toEqual(expected)
-        expect(localStorageResult).toEqual(expected)
+        expect(result).toEqual(expected)
+        expect(result).toEqual(unserializedValue)
       })
     })
     describe('(method) getItem', () => {
@@ -369,22 +296,6 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         expect(result).toBeNull()
       })
       describe('when the key exists in reactiveLocalStorage', () => {
-        it('Should return a primitive value (Number)', () => {
-          // Arrange
-          const key = faker.string.sample(15)
-          const expected = faker.number.int()
-
-          reactiveLocalStorage.setItem(key, expected)
-
-          // Act
-          const reactiveLocalStorageResult = reactiveLocalStorage.getItem(key)
-
-          // Assert
-          const localStorageResult = Number(localStorage.getItem(key))
-
-          expect(reactiveLocalStorageResult).toBe(expected)
-          expect(localStorageResult).toBe(expected)
-        })
         it('Should return an object (simple object)', () => {
           // Arrange
           const key = 'simpleObject'
@@ -396,31 +307,16 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
           reactiveLocalStorage.setItem(key, expected)
 
           // Act
-          const reactiveLocalStorageResult = reactiveLocalStorage.getItem(key)
-
-          // Assert
-          const localStorageResult = JSON.parse(localStorage.getItem(key))
-
-          expect(reactiveLocalStorageResult).toEqual(expected)
-          expect(localStorageResult).toEqual(expected)
-        })
-      })
-      describe('when the key not exists in reactiveLocalStorage, but exists into localStorage', () => {
-        it('Should return a primitive value (Number)', () => {
-          // Arrange
-          const key = faker.string.sample(27)
-          const expected = faker.number.int()
-
-          localStorage.setItem(key, expected)
-
-          // Act
           const result = reactiveLocalStorage.getItem(key)
 
           // Assert
-          expect(result).toBe(expected)
+          expect(result).toEqual(expected)
         })
+      })
+      describe('when the key not exists in reactiveLocalStorage, but exists into localStorage', () => {
         it('Should return an object (nested object)', () => {
           // Arrange
+          const defaultSerializer = getDefaultSerializer()
           const key = faker.string.numeric()
           const expected = {
             nestedObject: {
@@ -431,7 +327,8 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
             },
           }
 
-          localStorage.setItem(key, JSON.stringify(expected))
+          const serializedData = defaultSerializer.serialize(expected)
+          localStorage.setItem(key, serializedData)
 
           // Act
           const result = reactiveLocalStorage.getItem(key)
@@ -452,10 +349,18 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         // Assert
         expect(result).not.toThrow()
       })
-      it('Should remove a primitive value (Boolean)', () => {
+      it('Should remove an object (nested object)', () => {
         // Arrange
-        const key = faker.string.sample(32)
-        const value = true
+        const key = faker.string.sample()
+        const value = {
+          key: faker.string.sample(79),
+          nestedObject: {
+            key: faker.number.int(),
+            nestedObject: {
+              key: faker.string.sample(),
+            },
+          },
+        }
 
         reactiveLocalStorage.setItem(key, value)
 
@@ -463,30 +368,9 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.removeItem(key)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = localStorage.getItem(key)
+        const result = reactiveLocalStorage.getItem(key)
 
-        expect(reactiveLocalStorageResult).toBeUndefined()
-        expect(localStorageResult).toBeNull()
-      })
-      it('Should remove an object (Array)', () => {
-        // Arrange
-        const key = faker.string.sample(27)
-        const value = [1, 2, 3, 4, 5, 6, 7]
-
-        reactiveLocalStorage.setItem(key, value)
-
-        // Act
-        reactiveLocalStorage.removeItem(key)
-
-        // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = localStorage.getItem(key)
-
-        expect(reactiveLocalStorageResult).toBeUndefined()
-        expect(localStorageResult).toBeNull()
+        expect(result).toBeNull()
       })
     })
     describe('(method) clear', () => {
@@ -503,11 +387,41 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.clear()
 
         // Assert
-        const reactiveLocalStorageResult = reactiveLocalStorage.length
-        const localStorageResult = localStorage.length
+        const result = reactiveLocalStorage.length
+        const localStorageLength = localStorage.length
 
-        expect(reactiveLocalStorageResult).toBe(expected)
-        expect(localStorageResult).toBe(expected)
+        expect(result).toBe(expected)
+        expect(localStorageLength).toBe(expected)
+      })
+    })
+    describe('(method) loadDataFromLocalStorage', () => {
+      it('Should load data from localStorage', () => {
+        // Arrange
+        const defaultSerializer = getDefaultSerializer()
+        const input = [
+          { key: faker.string.sample(), value: faker.animal.bear() },
+          { key: faker.string.sample(), value: faker.commerce.department() },
+          {
+            key: faker.string.sample(),
+            value: faker.company.buzzPhrase(),
+          },
+        ]
+
+        for (const { key, value } of input) {
+          const serializedData = defaultSerializer.serialize(value)
+          localStorage.setItem(key, serializedData)
+        }
+
+        // Act
+        reactiveLocalStorage.loadDataFromLocalStorage()
+
+        // Assert
+        for (const { key, value } of input) {
+          const expected = value
+          const result = reactiveLocalStorage.getItem(key)
+
+          expect(result).toBe(expected)
+        }
       })
     })
     describe('(method) removeItemFromEvent', () => {
@@ -521,23 +435,6 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         // Assert
         expect(result).not.toThrow()
       })
-      it('Should remove a primitive value (String)', () => {
-        // Arrange
-        const key = faker.string.sample(79)
-        const value = faker.string.sample(99)
-
-        reactiveLocalStorage.setItem(key, value)
-        localStorage.removeItem(key)
-
-        // Act
-        reactiveLocalStorage.removeItemFromEvent(key)
-
-        // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-
-        expect(reactiveLocalStorageResult).toBeUndefined()
-      })
       it('Should remove an object (Array)', () => {
         // Arrange
         const key = faker.string.sample(77)
@@ -550,27 +447,12 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.removeItemFromEvent(key)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
+        const result = reactiveLocalStorage.getItem()
 
-        expect(reactiveLocalStorageResult).toBeUndefined()
+        expect(result).toBeNull()
       })
     })
     describe('(method) setItemFromEvent', () => {
-      it('Should add a primitive value (Boolean)', () => {
-        // Arrange
-        const key = faker.string.sample(45)
-        const expected = false
-
-        // Act
-        reactiveLocalStorage.setItemFromEvent(key, expected)
-
-        // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-
-        expect(reactiveLocalStorageResult).toBe(expected)
-      })
       it('Should add an object (Array)', () => {
         // Arrange
         const key = faker.string.sample(79)
@@ -582,10 +464,9 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.setItemFromEvent(key, expected)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
+        const result = reactiveLocalStorage.getItem(key)
 
-        expect(reactiveLocalStorageResult).toEqual(expected)
+        expect(result).toEqual(expected)
       })
       it('Should override an object saved in reactiveLocalStorage when add a new object using the same key', () => {
         // Arrange
@@ -602,10 +483,9 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.setItemFromEvent(key, expected)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
+        const result = reactiveLocalStorage.getItem(key)
 
-        expect(reactiveLocalStorageResult).toEqual(expected)
+        expect(result).toEqual(expected)
       })
     })
   })
@@ -614,26 +494,26 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
 
     beforeEach(() => {
       const reactiveStorage = reactive({})
+      const defaultSerializer = getDefaultSerializer()
       reactiveLocalStorage = getReactiveLocalStorageInstance(
         reactiveStorage,
         localStorage,
+        defaultSerializer,
       )
     })
-    afterEach(() => {
-      localStorage.clear()
-    })
+
     describe('(getter) length', () => {
       it('Should return 0 when reactiveLocalStorage is empty', () => {
         // Arrange
         const expected = 0
 
         // Act
-        const reactiveLocalStorageResult = reactiveLocalStorage.length
-        const localStorageResult = localStorage.length
+        const result = reactiveLocalStorage.length
+        const localStorageLength = localStorage.length
 
         // Assert
-        expect(reactiveLocalStorageResult).toBe(expected)
-        expect(localStorageResult).toBe(expected)
+        expect(result).toBe(expected)
+        expect(localStorageLength).toBe(expected)
       })
       it('Should return 7 when reactiveLocalStorage contain 7 elements', () => {
         // Arrange
@@ -642,12 +522,12 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         addItemsInReactiveLocalStorage(data, reactiveLocalStorage)
 
         // Act
-        const reactiveLocalStorageResult = reactiveLocalStorage.length
-        const localStorageResult = localStorage.length
+        const result = reactiveLocalStorage.length
+        const localStorageLength = localStorage.length
 
         // Assert
-        expect(reactiveLocalStorageResult).toBe(expected)
-        expect(localStorageResult).toBe(expected)
+        expect(result).toBe(expected)
+        expect(localStorageLength).toBe(expected)
       })
     })
     describe('(getter) reactiveStorage', () => {
@@ -676,7 +556,7 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
       it('return the key in fifth position into reactiveLocalStorage', () => {
         // Arrange
         const index = 4
-        const nData = faker.number.int({ max: 100 })
+        const nData = faker.number.int({ min: 10, max: 100 })
         const data = createArrayTestWithObjects(nData)
         const expected = data[index].key
         addItemsInReactiveLocalStorage(data, reactiveLocalStorage)
@@ -689,24 +569,9 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
       })
     })
     describe('(method) setItem', () => {
-      it('Should add a primitive value (Number)', () => {
-        // Arrange
-        const key = faker.string.sample(47)
-        const expected = faker.number.int()
-
-        // Act
-        reactiveLocalStorage.setItem(key, expected)
-
-        // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = Number(localStorage.getItem(key))
-
-        expect(reactiveLocalStorageResult).toBe(expected)
-        expect(localStorageResult).toBe(expected)
-      })
       it('Should add an object (Array)', () => {
         // Arrange
+        const defaultSerializer = getDefaultSerializer()
         const key = faker.string.sample(35)
         const expected = [1, 2, 3, 4, 5, 6, 7]
 
@@ -714,15 +579,18 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.setItem(key, expected)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = JSON.parse(localStorage.getItem(key))
+        const result = reactiveLocalStorage.getItem(key)
+        const valueReturnedFromLocalStorage = localStorage.getItem(key)
+        const unserializedValue = defaultSerializer.parse(
+          valueReturnedFromLocalStorage,
+        )
 
-        expect(reactiveLocalStorageResult).toEqual(expected)
-        expect(localStorageResult).toEqual(expected)
+        expect(result).toEqual(expected)
+        expect(result).toEqual(unserializedValue)
       })
       it('Should override an object saved in reactiveLocalStorage when add a new object using the same key', () => {
         // Arrange
+        const defaultSerializer = getDefaultSerializer()
         const key = faker.string.sample(45)
         const initValue = [1, 2, 3, 4, 5]
         const expected = [1, 2, 3]
@@ -733,12 +601,14 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.setItem(key, expected)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = JSON.parse(localStorage.getItem(key))
+        const result = reactiveLocalStorage.getItem(key)
+        const valueReturnedFromLocalStorage = localStorage.getItem(key)
+        const unserializedValue = defaultSerializer.parse(
+          valueReturnedFromLocalStorage,
+        )
 
-        expect(reactiveLocalStorageResult).toEqual(expected)
-        expect(localStorageResult).toEqual(expected)
+        expect(result).toEqual(expected)
+        expect(result).toEqual(unserializedValue)
       })
     })
     describe('(method) getItem', () => {
@@ -753,22 +623,6 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         expect(result).toBeNull()
       })
       describe('when the key exists in reactiveLocalStorage', () => {
-        it('Should return a primitive value (Boolean)', () => {
-          // Arrange
-          const key = faker.string.sample(79)
-          const expected = true
-
-          reactiveLocalStorage.setItem(key, expected)
-
-          // Act
-          const reactiveLocalStorageResult = reactiveLocalStorage.getItem(key)
-
-          // Assert
-          const localStorageResult = Boolean(localStorage.getItem(key))
-
-          expect(reactiveLocalStorageResult).toBe(expected)
-          expect(localStorageResult).toBe(expected)
-        })
         it('Should return an object (Array)', () => {
           // Arrange
           const key = faker.string.sample(57)
@@ -777,45 +631,30 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
           reactiveLocalStorage.setItem(key, expected)
 
           // Act
-          const reactiveLocalStorageResult = reactiveLocalStorage.getItem(key)
-
-          // Assert
-          const localStorageResult = JSON.parse(localStorage.getItem(key))
-
-          expect(reactiveLocalStorageResult).toEqual(expected)
-          expect(localStorageResult).toEqual(expected)
-        })
-      })
-      describe('when the key not exists in reactiveLocalStorage, but exists into localStorage', () => {
-        it('Should return a primitive value (String)', () => {
-          // Arrange
-          const key = faker.string.sample(79)
-          const expected = faker.string.sample(100)
-
-          localStorage.setItem(key, expected)
-
-          // Act
           const result = reactiveLocalStorage.getItem(key)
 
           // Assert
-          expect(result).toBe(expected)
+          expect(result).toEqual(expected)
         })
+      })
+      describe('when the key not exists in reactiveLocalStorage, but exists into localStorage', () => {
         it('Should return an object (simple object)', () => {
           // Arrange
+          const defaultSerializer = getDefaultSerializer()
           const key = faker.string.sample(57)
-          const input = {
+          const expected = {
             int: faker.number.int(),
             string: faker.string.sample(),
             username: faker.internet.userName(),
             password: faker.internet.password({ length: 17 }),
-            date: {
-              typeof: 'date',
-              value: faker.date.birthdate(),
+            number: {
+              typeof: 'number',
+              value: faker.number.int(),
             },
           }
-          const expected = { ...input, date: input.date.value }
 
-          localStorage.setItem(key, JSON.stringify(input))
+          const serializedData = defaultSerializer.serialize(expected)
+          localStorage.setItem(key, serializedData)
 
           // Act
           const result = reactiveLocalStorage.getItem(key)
@@ -836,24 +675,6 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         // Assert
         expect(result).not.toThrow()
       })
-      it('Should remove a primitive value (String)', () => {
-        // Arrange
-        const key = faker.string.sample(100)
-        const value = faker.string.sample()
-
-        reactiveLocalStorage.setItem(key, value)
-
-        // Act
-        reactiveLocalStorage.removeItem(key)
-
-        // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = localStorage.getItem(key)
-
-        expect(reactiveLocalStorageResult).toBeUndefined()
-        expect(localStorageResult).toBeNull()
-      })
       it('Should remove an object (nested object)', () => {
         // Arrange
         const key = faker.string.sample()
@@ -873,12 +694,9 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.removeItem(key)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-        const localStorageResult = localStorage.getItem(key)
+        const result = reactiveLocalStorage.getItem(key)
 
-        expect(reactiveLocalStorageResult).toBeUndefined()
-        expect(localStorageResult).toBeNull()
+        expect(result).toBeNull()
       })
     })
     describe('(method) clear', () => {
@@ -893,11 +711,41 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.clear()
 
         // Assert
-        const reactiveLocalStorageResult = reactiveLocalStorage.length
-        const localStorageResult = localStorage.length
+        const result = reactiveLocalStorage.length
+        const localStorageLength = localStorage.length
 
-        expect(reactiveLocalStorageResult).toBe(expected)
-        expect(localStorageResult).toBe(expected)
+        expect(result).toBe(expected)
+        expect(localStorageLength).toBe(expected)
+      })
+    })
+    describe('(method) loadDataFromLocalStorage', () => {
+      it('Should load data from localStorage', () => {
+        // Arrange
+        const defaultSerializer = getDefaultSerializer()
+        const input = [
+          { key: faker.string.sample(), value: faker.animal.bear() },
+          { key: faker.string.sample(), value: faker.commerce.department() },
+          {
+            key: faker.string.sample(),
+            value: [1, 2, 7, 5, 7, 1, 2, 3, 4, 5, 1, 2],
+          },
+        ]
+
+        for (const { key, value } of input) {
+          const serializedData = defaultSerializer.serialize(value)
+          localStorage.setItem(key, serializedData)
+        }
+
+        // Act
+        reactiveLocalStorage.loadDataFromLocalStorage()
+
+        // Assert
+        for (const { key, value } of input) {
+          const expected = value
+          const result = reactiveLocalStorage.getItem(key)
+
+          expect(result).toStrictEqual(expected)
+        }
       })
     })
     describe('(method) removeItemFromEvent', () => {
@@ -910,23 +758,6 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
 
         // Assert
         expect(result).not.toThrow()
-      })
-      it('Should remove a primitive value (Number)', () => {
-        // Arrange
-        const key = faker.string.sample(79)
-        const value = 7
-
-        reactiveLocalStorage.setItem(key, value)
-        localStorage.removeItem(key)
-
-        // Act
-        reactiveLocalStorage.removeItemFromEvent(key)
-
-        // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-
-        expect(reactiveLocalStorageResult).toBeUndefined()
       })
       it('Should remove an object (simple object)', () => {
         // Arrange
@@ -943,27 +774,12 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.removeItemFromEvent(key)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
+        const result = reactiveLocalStorage.getItem(key)
 
-        expect(reactiveLocalStorageResult).toBeUndefined()
+        expect(result).toBeNull()
       })
     })
     describe('(method) setItemFromEvent', () => {
-      it('Should add a primitive value (String)', () => {
-        // Arrange
-        const key = faker.string.sample(79)
-        const expected = faker.string.sample()
-
-        // Act
-        reactiveLocalStorage.setItemFromEvent(key, expected)
-
-        // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
-
-        expect(reactiveLocalStorageResult).toBe(expected)
-      })
       it('Should add an object (simple object)', () => {
         // Arrange
         const key = faker.string.sample()
@@ -975,10 +791,9 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.setItemFromEvent(key, expected)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
+        const result = reactiveLocalStorage.getItem(key)
 
-        expect(reactiveLocalStorageResult).toEqual(expected)
+        expect(result).toEqual(expected)
       })
       it('Should override an object saved in reactiveLocalStorage when add a new object using the same key', () => {
         // Arrange
@@ -994,10 +809,9 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
         reactiveLocalStorage.setItemFromEvent(key, expected)
 
         // Assert
-        const reactiveStorage = getReactiveStorageInstance(reactiveLocalStorage)
-        const reactiveLocalStorageResult = reactiveStorage[key]
+        const result = reactiveLocalStorage.getItem(key)
 
-        expect(reactiveLocalStorageResult).toEqual(expected)
+        expect(result).toEqual(expected)
       })
     })
   })

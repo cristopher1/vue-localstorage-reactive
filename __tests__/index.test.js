@@ -1,6 +1,5 @@
-import reactiveLocalStorageplugin from '../../src/index'
-
-const filePath = 'src/index.js'
+import reactiveLocalStoragePlugin from '../src/index'
+import { ReactiveLocalStorage } from '../src/reactiveLocalStorage/storage/ReactiveLocalStorage'
 
 const createApp = () => ({
   config: {
@@ -8,21 +7,23 @@ const createApp = () => ({
   },
 })
 
-describe(`export default (${filePath})`, () => {
+const filePath = 'src/index.js'
+
+describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
   describe('(method) install', () => {
     it('Should install plugin with default parameters', () => {
       // Arrange
       const app = createApp()
+      const expected = ReactiveLocalStorage
 
       // Act
-      reactiveLocalStorageplugin.install(app)
+      reactiveLocalStoragePlugin.install(app)
 
       // Assert
-      const reactiveLocalStorage =
+      const result =
         app.config.globalProperties.$reactiveWebStorage.localStorage
 
-      expect(reactiveLocalStorage).not.toBeUndefined()
-      expect(reactiveLocalStorage).not.toBeNull()
+      expect(result).toBeInstanceOf(expected)
     })
     it('Should install plugin without default parameters', () => {
       // Arrange
@@ -32,16 +33,16 @@ describe(`export default (${filePath})`, () => {
         useRemoveItemFromLocalStorage: true,
         useAddItemFromLocalStorage: true,
       }
+      const expected = ReactiveLocalStorage
 
       // Act
-      reactiveLocalStorageplugin.install(app, options)
+      reactiveLocalStoragePlugin.install(app, options)
 
       // Assert
-      const reactiveLocalStorage =
+      const result =
         app.config.globalProperties.$reactiveWebStorage.localStorage
 
-      expect(reactiveLocalStorage).not.toBeUndefined()
-      expect(reactiveLocalStorage).not.toBeNull()
+      expect(result).toBeInstanceOf(expected)
     })
   })
 })

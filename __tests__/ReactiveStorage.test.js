@@ -1,5 +1,5 @@
-import { ReactiveStorage } from '../../src/reactiveStorage/ReactiveStorage'
-import { ReactiveStorageError } from '../../src/reactiveStorage/Error'
+import { ReactiveStorage } from '../src/reactiveLocalStorage/storage/ReactiveStorage'
+import { ReactiveStorageError } from '../src/reactiveLocalStorage/storage/Error'
 import { ref } from 'vue'
 
 const filePath = 'src/reactiveStorage/ReactiveStorage.js'
