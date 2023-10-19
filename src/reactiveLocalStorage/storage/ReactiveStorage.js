@@ -50,7 +50,7 @@ export class ReactiveStorage {
     const reactiveStorage = this.#obtainReactiveStorageValue(
       this.#reactiveStorage,
     )
-    return reactiveStorage[key]
+    return reactiveStorage[key] ?? null
   }
 
   removeItem(key) {
