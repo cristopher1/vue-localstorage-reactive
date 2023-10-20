@@ -28,21 +28,24 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     return super.key(index)
   }
 
-  getItem(key) {
+  getItem(key, parseOptions = {}) {
     let value = super.getItem(key)
     if (!value) {
       const valueObtainedFromWebStorage = this.#webStorage.getItem(key)
       if (valueObtainedFromWebStorage) {
-        value = this.#serializer.parse(valueObtainedFromWebStorage)
+        value = this.#serializer.parse(
+          valueObtainedFromWebStorage,
+          parseOptions,
+        )
         super.setItem(key, value)
       }
     }
     return value
   }
 
-  setItem(key, item) {
+  setItem(key, item, serializeOptions = {}) {
     super.setItem(key, item)
-    const serializedData = this.#serializer.serialize(item)
+    const serializedData = this.#serializer.serialize(item, serializeOptions)
     this.#webStorage.setItem(key, serializedData)
   }
 
@@ -56,13 +59,13 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     this.#webStorage.clear()
   }
 
-  loadDataFromLocalStorage() {
+  loadDataFromLocalStorage(parseOptions = {}) {
     const webStorage = this.#webStorage
     const length = webStorage.length
     for (let index = 0; index < length; ++index) {
       const key = webStorage.key(index)
       const value = webStorage.getItem(key)
-      const unserializedValue = this.#serializer.parse(value)
+      const unserializedValue = this.#serializer.parse(value, parseOptions)
       super.setItem(key, unserializedValue)
     }
   }
