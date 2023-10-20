@@ -1,3 +1,4 @@
+import { SerializerFactory } from '../defaultSerializer/factory/SerializerFactory'
 import { ReactiveLocalStorage } from '../storage/ReactiveLocalStorage'
 import { ref } from 'vue'
 
@@ -9,16 +10,7 @@ export class ReactiveLocalStorageBuilder {
   constructor() {
     this.#reactiveStorage = ref({})
     this.#webStorage = window.localStorage
-    this.#serializer = {
-      serialize: (value, options) => {
-        const { replacer, space } = options
-        return JSON.stringify(value, replacer, space)
-      },
-      parse: (value, options) => {
-        const { reviver } = options
-        return JSON.parse(value, reviver)
-      },
-    }
+    this.#serializer = SerializerFactory.createDefaultSerializer()
   }
 
   setReactiveStorage(reactiveStorage) {
