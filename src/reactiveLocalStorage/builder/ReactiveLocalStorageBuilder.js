@@ -10,8 +10,14 @@ export class ReactiveLocalStorageBuilder {
     this.#reactiveStorage = ref({})
     this.#webStorage = window.localStorage
     this.#serializer = {
-      serialize: (...parameters) => JSON.stringify(...parameters),
-      parse: (...parameters) => JSON.parse(...parameters),
+      serialize: (value, options) => {
+        const { replacer, space } = options
+        return JSON.stringify(value, replacer, space)
+      },
+      parse: (value, options) => {
+        const { reviver } = options
+        return JSON.parse(value, reviver)
+      },
     }
   }
 
