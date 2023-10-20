@@ -4,8 +4,14 @@ import { ReactiveLocalStorage } from '../../src/reactiveLocalStorage/storage/Rea
 faker.seed(129)
 
 export const getDefaultSerializer = () => ({
-  serialize: (...parameters) => JSON.stringify(...parameters),
-  parse: (...parameters) => JSON.parse(...parameters),
+  serialize: (value, options = {}) => {
+    const { replacer, space } = options
+    return JSON.stringify(value, replacer, space)
+  },
+  parse: (value, options = {}) => {
+    const { reviver } = options
+    return JSON.parse(value, reviver)
+  },
 })
 
 export const getReactiveLocalStorageInstance = (
