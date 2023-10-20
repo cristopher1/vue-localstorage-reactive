@@ -2,9 +2,9 @@ import { ReactiveWebStorageListenerFactory } from './ReactiveWebStorageListenerF
 
 /** @implements {ReactiveWebStorageListenerFactory} */
 export class LoadDataFromLocalStorageFactory {
-  static createListener(reactiveWebStorage) {
+  static createListener(reactiveLocalStorage) {
     return function loadDataFromLocalStorageListener() {
-      reactiveWebStorage.loadDataFromLocalStorage()
+      reactiveLocalStorage.loadDataFromLocalStorage()
     }
   }
 }

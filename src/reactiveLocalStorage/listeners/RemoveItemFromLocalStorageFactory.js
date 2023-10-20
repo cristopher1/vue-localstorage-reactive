@@ -2,10 +2,10 @@ import { ReactiveWebStorageListenerFactory } from './ReactiveWebStorageListenerF
 
 /** @implements {ReactiveWebStorageListenerFactory} */
 export class RemoveItemFromLocalStorageFactory {
-  static createListener(reactiveWebStorage) {
+  static createListener(reactiveLocalStorage) {
     return function removeItemFromLocalStorageListener({ key, newValue }) {
       if (!newValue) {
-        reactiveWebStorage.removeItemFromEvent(key)
+        reactiveLocalStorage.removeItemFromEvent(key)
       }
     }
   }
