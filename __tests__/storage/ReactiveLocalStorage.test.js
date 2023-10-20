@@ -2,6 +2,8 @@ import {
   faker,
   getDefaultSerializer,
   getReactiveLocalStorageInstance,
+  createArrayTestWithObjects,
+  addItemsInReactiveLocalStorage,
   localStorage,
 } from '../helpers'
 import {
@@ -11,29 +13,6 @@ import {
 import { ref, reactive, isRef, isReactive } from 'vue'
 
 const filePath = 'src/reactiveLocalStorage/storage/ReactiveLocalStorage.js'
-
-const createArrayTestWithObjects = (nElement) => {
-  const array = []
-  for (let i = 0; i < nElement; i++) {
-    const element = {
-      key: faker.string.sample(),
-      value: {
-        string: faker.string.sample(),
-        number: faker.number.int(),
-        array: new Array(faker.number.int({ max: 100 })),
-      },
-    }
-    array.push(element)
-  }
-  return array
-}
-
-const addItemsInReactiveLocalStorage = (elements, reactiveLocalStorage) => {
-  elements.forEach((element) => {
-    const { key, value } = element
-    reactiveLocalStorage.setItem(key, value)
-  })
-}
 
 describe(`class ReactiveLocalStorage (${filePath})`, () => {
   describe('constructor', () => {
