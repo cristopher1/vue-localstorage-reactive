@@ -1,4 +1,4 @@
-import { SerializerFactory } from '../defaultSerializer/factory/SerializerFactory'
+import { SerializerFactory } from './defaultSerializer/factory/SerializerFactory'
 import { ReactiveLocalStorage } from '../storage/ReactiveLocalStorage'
 import { ref } from 'vue'
 
