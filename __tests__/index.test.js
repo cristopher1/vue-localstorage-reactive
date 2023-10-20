@@ -122,12 +122,34 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
         })
       })
       describe('(method) setItem', () => {
-        it('Should set an object (nested object)', () => {
+        it('Should set an object (nested object) using serialize and parse options', () => {
           // Arrange
+          const serializeOptions = {
+            replacer: function (key, value) {
+              if (typeof value === 'bigint') {
+                return {
+                  __typeof__: 'bigint',
+                  value: value.toString(),
+                }
+              }
+              return value
+            },
+            space: 1,
+          }
+          const parseOptions = {
+            reviver: function (key, value) {
+              const { __typeof__ } = value
+              if (__typeof__ === 'bigint') {
+                return BigInt(value.value)
+              }
+              return value
+            },
+          }
+
           const key = faker.string.sample(30)
           const expected = {
             key1: faker.string.sample(90),
-            key2: faker.number.int(),
+            key2: faker.number.bigInt(),
             key3: {
               nestedObject: {
                 key1: faker.string.symbol(17),
@@ -150,13 +172,14 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
           }
 
           // Act
-          reactiveLocalStorage.setItem(key, expected)
+          reactiveLocalStorage.setItem(key, expected, serializeOptions)
 
           // Assert
-          const result = reactiveLocalStorage.getItem(key)
+          const result = reactiveLocalStorage.getItem(key, parseOptions)
           const valueReturnedFromLocalStorage = localStorage.getItem(key)
           const unserializedValue = defaultSerializer.parse(
             valueReturnedFromLocalStorage,
+            parseOptions,
           )
 
           expect(result).toEqual(expected)
