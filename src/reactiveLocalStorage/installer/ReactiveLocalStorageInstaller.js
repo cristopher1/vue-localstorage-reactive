@@ -1,26 +1,10 @@
-import { ref, reactive } from 'vue'
-import { ReactiveLocalStorageFactory } from '../factory/ReactiveLocalStorageFactory'
 import { LoadDataFromLocalStorageFactory } from '../listeners/LoadDataFromLocalStorageFactory'
 import { RemoveItemFromLocalStorageFactory } from '../listeners/RemoveItemFromLocalStorageFactory'
 import { SetItemFromLocalStorageFactory } from '../listeners/SetItemFromLocalStorageFactory'
+import { ReactiveLocalStorageBuilder } from '../builder/ReactiveLocalStorageBuilder'
+import { reactive } from 'vue'
 
 export class ReactiveLocalStorageInstaller {
-  #getReactiveStorage(useRefStorage) {
-    return useRefStorage ? ref({}) : reactive({})
-  }
-
-  #getWebStorage() {
-    return window.localStorage
-  }
-
-  #getSerializer(serializer) {
-    const defaultSerializer = {
-      serialize: (...parameters) => JSON.stringify(...parameters),
-      parse: (...parameters) => JSON.parse(...parameters),
-    }
-    return serializer ?? defaultSerializer
-  }
-
   #activateLoadDataFromLocalStorageEventListener(reactiveLocalStorage) {
     const onLoad =
       LoadDataFromLocalStorageFactory.createListener(reactiveLocalStorage)
@@ -54,19 +38,20 @@ export class ReactiveLocalStorageInstaller {
       useRefStorage = true,
       useRemoveItemFromLocalStorage = false,
       useAddItemFromLocalStorage = false,
-      serializer = null,
+      serializer = undefined,
     } = options
 
-    const reactiveStorage = this.#getReactiveStorage(useRefStorage)
-    const webStorage = this.#getWebStorage()
-    const serializerObject = this.#getSerializer(serializer)
+    const reactiveLocalStorageBuilder = new ReactiveLocalStorageBuilder()
 
-    const reactiveLocalStorage =
-      ReactiveLocalStorageFactory.createReactiveStorage(
-        reactiveStorage,
-        webStorage,
-        serializerObject,
-      )
+    if (!useRefStorage) {
+      reactiveLocalStorageBuilder.setReactiveStorage(reactive({}))
+    }
+
+    if (serializer) {
+      reactiveLocalStorageBuilder.setSerializer(serializer)
+    }
+
+    const reactiveLocalStorage = reactiveLocalStorageBuilder.build()
 
     this.#activateLoadDataFromLocalStorageEventListener(reactiveLocalStorage)
 
