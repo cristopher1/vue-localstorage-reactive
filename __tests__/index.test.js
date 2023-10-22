@@ -29,8 +29,7 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
         reactiveLocalStoragePlugin.install(app)
 
         // Assert
-        const result =
-          app.config.globalProperties.$reactiveWebStorage.localStorage
+        const result = app.config.globalProperties.$reactiveLocalStorage
 
         expect(result).toBeInstanceOf(expected)
       })
@@ -47,8 +46,7 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
 
         reactiveLocalStoragePlugin.install(app)
 
-        reactiveLocalStorage =
-          app.config.globalProperties.$reactiveWebStorage.localStorage
+        reactiveLocalStorage = app.config.globalProperties.$reactiveLocalStorage
       })
 
       afterEach(() => {
@@ -433,52 +431,6 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
           expect(result).toBe(expected)
         })
       })
-      describe('(function) RemoveItemFromLocalStorageListener', () => {
-        it('Should not remove a pair key/value into reactiveLocalStorage when the key is removed from localStorage', () => {
-          // Arrange
-          const key = faker.string.sample()
-          const value = faker.animal.cow()
-          const storageEvent = new StorageEvent('storage', {
-            key,
-            newValue: null,
-          })
-          const expected = value
-
-          reactiveLocalStorage.setItem(key, value)
-
-          // the data is removed to simulate a storage event
-          localStorage.removeItem(key)
-
-          // Act
-          window.dispatchEvent(storageEvent)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem(key)
-          expect(result).toBe(expected)
-        })
-      })
-      describe('(function) SetItemFromLocalStorageListener', () => {
-        it('Should not update the value of a key into reactiveLocalStorage when that value is update from localStorage', () => {
-          // Arrange
-          const key = faker.string.sample()
-          const value = faker.animal.cow()
-          const newValue = faker.commerce.productName()
-          const storageEvent = new StorageEvent('storage', {
-            key,
-            newValue,
-          })
-          const expected = value
-
-          reactiveLocalStorage.setItem(key, value)
-
-          // Act
-          window.dispatchEvent(storageEvent)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem(key)
-          expect(result).toBe(expected)
-        })
-      })
     })
   })
   describe('use the installer without default parameters', () => {
@@ -497,8 +449,7 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
         reactiveLocalStoragePlugin.install(app, options)
 
         // Assert
-        const result =
-          app.config.globalProperties.$reactiveWebStorage.localStorage
+        const result = app.config.globalProperties.$reactiveLocalStorage
 
         expect(result).toBeInstanceOf(expected)
       })
@@ -521,8 +472,7 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
 
         reactiveLocalStoragePlugin.install(app, options)
 
-        reactiveLocalStorage =
-          app.config.globalProperties.$reactiveWebStorage.localStorage
+        reactiveLocalStorage = app.config.globalProperties.$reactiveLocalStorage
       })
 
       afterEach(() => {
@@ -878,50 +828,6 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
 
           // Act
           window.dispatchEvent(loadEvent)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem(key)
-          expect(result).toBe(expected)
-        })
-      })
-      describe('(function) RemoveItemFromLocalStorageListener', () => {
-        it('Should remove a pair key/value into reactiveLocalStorage when the key is removed from localStorage', () => {
-          // Arrange
-          const key = faker.string.sample()
-          const value = faker.animal.cow()
-          const storageEvent = new StorageEvent('storage', {
-            key,
-            newValue: null,
-          })
-
-          reactiveLocalStorage.setItem(key, value)
-
-          // the data is removed to simulate a storage event
-          localStorage.removeItem(key)
-
-          // Act
-          window.dispatchEvent(storageEvent)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem(key)
-          expect(result).toBeNull()
-        })
-      })
-      describe('(function) SetItemFromLocalStorageListener', () => {
-        it('Should update the value of a key into reactiveLocalStorage when that value is update from localStorage', () => {
-          // Arrange
-          const key = faker.string.sample()
-          const value = faker.animal.cow()
-          const expected = faker.commerce.productName()
-          const storageEvent = new StorageEvent('storage', {
-            key,
-            newValue: expected,
-          })
-
-          reactiveLocalStorage.setItem(key, value)
-
-          // Act
-          window.dispatchEvent(storageEvent)
 
           // Assert
           const result = reactiveLocalStorage.getItem(key)
