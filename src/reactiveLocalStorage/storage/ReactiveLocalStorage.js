@@ -12,6 +12,13 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     this.#loadDataFromLocalStorageParameters = {}
   }
 
+  /**
+   * Sets the parseOptions that will be used to serialize.parse method that will
+   * be called into loadDataFromLocalStorage method.
+   *
+   * @param {object} parameters The parameters used to parse data when the
+   *   loadDataFromLocalStorage method is called.
+   */
   setLoadDataFromLocalStorageParameters(parameters) {
     this.#loadDataFromLocalStorageParameters = parameters
   }
@@ -26,9 +33,10 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   }
 
   /**
-   * Returns the reactiveStorage used by ReactiveLocalStorage.
+   * Returns the reactiveStorage object used by reactiveLocalStorage instance.
    *
-   * @returns {any} The ReactiveStorage used by ReactiveLocalStorage.
+   * @returns {any} The reactiveStorage object used by reactiveLocalStorage
+   *   instance.
    */
   get reactiveStorage() {
     return super.reactiveStorage
@@ -44,6 +52,48 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     return super.key(index)
   }
 
+  /**
+   * Returns the parsed key's value saved into reactiveLocalStorage.
+   *
+   * @example
+   *   // Obtains an instance of reactiveLocalStorage, in this case will be used a
+   *   // reactiveLocalStorage with a default serializer.
+   *
+   *   const serializeOptions = {
+   *     replacer: function (key, value) {
+   *       const unserializedData = this[key]
+   *       if (unserializedData instanceof Date) {
+   *         return {
+   *           __typeof__: 'Date',
+   *           value: unserializedData.toJSON(),
+   *         }
+   *       }
+   *       return value
+   *     },
+   *     space: 1,
+   *   }
+   *
+   *   const parseOptions = {
+   *     reviver: function (key, value) {
+   *       const { __typeof__ } = value
+   *       if (__typeof__ === 'Date') {
+   *         return new Date(value.value)
+   *       }
+   *       return value
+   *     },
+   *   }
+   *
+   *   const date = new Date()
+   *
+   *   reactiveLocalStorage.setItem('key', date, serializeOptions)
+   *
+   *   const parseData = reactiveLocalStorage.getItem('key', parseOptions)
+   *
+   * @param {string} key A key saved into reactiveLocalStorage.
+   * @param {object} parseOptions An object that contains the options that will
+   *   be passed to serializer.parse method.
+   * @returns {any} The parsed key's value.
+   */
   getItem(key, parseOptions = {}) {
     let value = super.getItem(key)
     if (!value) {
@@ -59,18 +109,62 @@ export class ReactiveLocalStorage extends ReactiveStorage {
     return value
   }
 
+  /**
+   * Saves the pair key/value into reactiveLocalStorage.
+   *
+   * @example
+   *   // Obtains an instance of reactiveLocalStorage, in this case will be used a
+   *   // reactiveLocalStorage with a default serializer.
+   *
+   *   const serializeOptions = {
+   *     replacer: function (key, value) {
+   *       if (typeof value === 'bigint') {
+   *         return {
+   *           __typeof__: 'bigint',
+   *           value: value.toString(),
+   *         }
+   *       }
+   *       return value
+   *     },
+   *     space: 1,
+   *   }
+   *
+   *   const parseOptions = {
+   *     reviver: function (key, value) {
+   *       const { __typeof__ } = value
+   *       if (__typeof__ === 'bigint') {
+   *         return BigInt(value.value)
+   *       }
+   *       return value
+   *     },
+   *   }
+   *
+   *   const bigInt = BigInt(200)
+   *
+   *   reactiveLocalStorage.setItem('key', bigInt, serializeOptions)
+   *
+   * @param {string} key A key saved into reactiveLocalStorage.
+   * @param {any} item The key's value to save.
+   * @param {object} serializeOptions An object that contains the options that
+   *   will be passed to serializer.serialize method.
+   */
   setItem(key, item, serializeOptions = {}) {
     super.setItem(key, item)
     const serializedData = this.#serializer.serialize(item, serializeOptions)
     this.#localStorage.setItem(key, serializedData)
   }
 
+  /**
+   * Removes the pair key/value from reactiveLocalStorage.
+   *
+   * @param {string} key The key to remove from reactiveLocalStorage.
+   */
   removeItem(key) {
     super.removeItem(key)
     this.#localStorage.removeItem(key)
   }
 
-  /** Removes all pair key/value into reactiveLocalStorage. */
+  /** Removes all pairs key/value into reactiveLocalStorage. */
   clear() {
     super.clear()
     this.#localStorage.clear()
@@ -78,11 +172,12 @@ export class ReactiveLocalStorage extends ReactiveStorage {
 
   /**
    * This method must be used into listener object that listens an event. Sets
-   * the data from localStorage into reactiveLocalStorage when the listener
+   * the data from localStorage into reactiveLocalStorage when the listened
    * event is fired.
    *
    * @example
-   *   // Obtains an instance of reactiveLocalStorage using default serializer.
+   *   // Obtains an instance of reactiveLocalStorage, in this case will be used a
+   *   // reactiveLocalStirage with a default serializer.
    *
    *   // For this example, the data is serialized using the following options:
    *   // const serializeOptions = {
@@ -108,9 +203,13 @@ export class ReactiveLocalStorage extends ReactiveStorage {
    *     },
    *   }
    *
+   *   reactiveLocalStorage.setLoadDataFromLocalStorageParameters(
+   *     parseOptions,
+   *   )
+   *
    *   function createLoadDataFromLocalStorage(reactiveLocalStorage) {
    *     return () => {
-   *       reactiveLocalStorage.loadDataFromLocalStorage(parseOptions)
+   *       reactiveLocalStorage.loadDataFromLocalStorage()
    *     }
    *   }
    *
@@ -121,9 +220,6 @@ export class ReactiveLocalStorage extends ReactiveStorage {
    *
    *   // Listens the event.
    *   window.addEventListener('load', loadDataFromLocalStorage)
-   *
-   * @param {object} parseOptions The options used by the parse method
-   *   implemented by the serializer object.
    */
   loadDataFromLocalStorage() {
     const parseOptions = this.#loadDataFromLocalStorageParameters
@@ -135,72 +231,5 @@ export class ReactiveLocalStorage extends ReactiveStorage {
       const unserializedValue = this.#serializer.parse(value, parseOptions)
       super.setItem(key, unserializedValue)
     }
-  }
-
-  /**
-   * This method must be used into listener object that listens a storage event.
-   * Updates a pair key/value into reactiveLocalStorage when a pair key/value is
-   * updated from storage area.
-   *
-   * @example
-   *   // Obtains an instance of reactiveLocalStorage.
-   *
-   *   function createSetItemFromLocalStorageListener(reactiveLocalStorage) {
-   *     // Listener that updates a pair key/value into
-   *     // reactiveLocalStorage when the pair key/value is updated
-   *     // from storage area.
-   *     return ({ key, newValue }) => {
-   *       if (newValue) {
-   *         reactiveLocalStorage.setItemFromEvent(key, newValue)
-   *       }
-   *     }
-   *   }
-   *
-   *   // Obtains the listener.
-   *   const setItemFromLocalStorageListener =
-   *     createSetItemFromLocalStorageListener(reactiveLocalStorage)
-   *
-   *   // Listens the storage event.
-   *   window.addEventListener('storage', setItemFromLocalStorageListener)
-   *
-   * @param {string} key A key into reactiveLocalStorage.
-   * @param {any} item The item to save.
-   */
-  setItemFromEvent(key, item) {
-    super.setItem(key, item)
-  }
-
-  /**
-   * This method must be used into listener object that listens a storage event.
-   * Removes a pair key/value into reactiveLocalStorage when a pair key/value is
-   * removed from storage area.
-   *
-   * @example
-   *   // Obtains an instance of reactiveLocalStorage.
-   *
-   *   function createRemoveItemFromLocalStorageListener(
-   *     reactiveLocalStorage,
-   *   ) {
-   *     // Listener that removes a pair key/value into
-   *     // reactiveLocalStorage when the pair key/value is removed
-   *     // from storage area.
-   *     return ({ key, newValue }) => {
-   *       if (!newValue) {
-   *         reactiveLocalStorage.removeItemFromEvent(key)
-   *       }
-   *     }
-   *   }
-   *
-   *   // Obtains the listener.
-   *   const removeItemFromLocalStorageListener =
-   *     createRemoveItemFromLocalStorageListener(reactiveLocalStorage)
-   *
-   *   // Listens the storage event.
-   *   window.addEventListener('storage', removeItemFromLocalStorageListener)
-   *
-   * @param {string} key A key into reactiveLocalStorage.
-   */
-  removeItemFromEvent(key) {
-    super.removeItem(key)
   }
 }
