@@ -1,8 +1,13 @@
 import { LoadDataFromLocalStorageFactory } from '../listeners/LoadDataFromLocalStorageFactory'
-import { ReactiveLocalStorageBuilder } from '../builder/ReactiveLocalStorageBuilder'
 import { App, reactive } from 'vue'
 
 export class ReactiveLocalStorageInstaller {
+  #reactiveLocalStorageBuilder
+
+  constructor(reactiveLocalStorageBuilder) {
+    this.#reactiveLocalStorageBuilder = reactiveLocalStorageBuilder
+  }
+
   #activateLoadDataFromLocalStorageEventListener(reactiveLocalStorage) {
     const onLoad =
       LoadDataFromLocalStorageFactory.createListener(reactiveLocalStorage)
@@ -31,17 +36,15 @@ export class ReactiveLocalStorageInstaller {
   install(app, options = {}) {
     const { useRefStorage = true, serializer = undefined } = options
 
-    const reactiveLocalStorageBuilder = new ReactiveLocalStorageBuilder()
-
     if (!useRefStorage) {
-      reactiveLocalStorageBuilder.setReactiveStorage(reactive({}))
+      this.#reactiveLocalStorageBuilder.setReactiveStorage(reactive({}))
     }
 
     if (serializer) {
-      reactiveLocalStorageBuilder.setSerializer(serializer)
+      this.#reactiveLocalStorageBuilder.setSerializer(serializer)
     }
 
-    const reactiveLocalStorage = reactiveLocalStorageBuilder.build()
+    const reactiveLocalStorage = this.#reactiveLocalStorageBuilder.build()
 
     this.#activateLoadDataFromLocalStorageEventListener(reactiveLocalStorage)
     this.#addReactiveLocalStorageToApp(app, reactiveLocalStorage)
