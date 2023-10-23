@@ -1,18 +1,12 @@
-import { ReactiveLocalStorageError } from './Error'
 import { ReactiveStorage } from './ReactiveStorage'
 
 export class ReactiveLocalStorage extends ReactiveStorage {
-  #webStorage
+  #localStorage
   #serializer
 
-  constructor(reactiveStorage, webStorage, serializer) {
-    if (!(webStorage instanceof Storage)) {
-      throw new ReactiveLocalStorageError(
-        '"webStorage" parameter must be instanceof Storage',
-      )
-    }
+  constructor(reactiveStorage, localStorage, serializer) {
     super(reactiveStorage)
-    this.#webStorage = webStorage
+    this.#localStorage = localStorage
     this.#serializer = serializer
   }
 
@@ -47,7 +41,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   getItem(key, parseOptions = {}) {
     let value = super.getItem(key)
     if (!value) {
-      const valueObtainedFromWebStorage = this.#webStorage.getItem(key)
+      const valueObtainedFromWebStorage = this.#localStorage.getItem(key)
       if (valueObtainedFromWebStorage) {
         value = this.#serializer.parse(
           valueObtainedFromWebStorage,
@@ -62,18 +56,18 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   setItem(key, item, serializeOptions = {}) {
     super.setItem(key, item)
     const serializedData = this.#serializer.serialize(item, serializeOptions)
-    this.#webStorage.setItem(key, serializedData)
+    this.#localStorage.setItem(key, serializedData)
   }
 
   removeItem(key) {
     super.removeItem(key)
-    this.#webStorage.removeItem(key)
+    this.#localStorage.removeItem(key)
   }
 
   /** Removes all pair key/value into reactiveLocalStorage. */
   clear() {
     super.clear()
-    this.#webStorage.clear()
+    this.#localStorage.clear()
   }
 
   /**
@@ -126,11 +120,11 @@ export class ReactiveLocalStorage extends ReactiveStorage {
    *   implemented by the serializer object.
    */
   loadDataFromLocalStorage(parseOptions = {}) {
-    const webStorage = this.#webStorage
-    const length = webStorage.length
+    const localStorage = this.#localStorage
+    const length = localStorage.length
     for (let index = 0; index < length; ++index) {
-      const key = webStorage.key(index)
-      const value = webStorage.getItem(key)
+      const key = localStorage.key(index)
+      const value = localStorage.getItem(key)
       const unserializedValue = this.#serializer.parse(value, parseOptions)
       super.setItem(key, unserializedValue)
     }
