@@ -817,13 +817,43 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
         })
       })
       describe('(function) loadDataFromLocalStorageListener', () => {
-        it('Should load data into localStorage when the event load is produced', () => {
+        it('Should load data into localStorage when the event load is produced using the setLoadDataFromLocalStorageParameters', () => {
           // Arrange
+          const serializeOptions = {
+            replacer: function (key, value) {
+              if (typeof value === 'bigint') {
+                return {
+                  __typeof__: 'bigint',
+                  value: value.toString(),
+                }
+              }
+              return value
+            },
+            space: 1,
+          }
+          const parseOptions = {
+            reviver: function (key, value) {
+              const { __typeof__ } = value
+              if (__typeof__ === 'bigint') {
+                return BigInt(value.value)
+              }
+              return value
+            },
+          }
+
+          reactiveLocalStorage.setLoadDataFromLocalStorageParameters(
+            parseOptions,
+          )
+
           const loadEvent = new Event('load')
           const key = faker.string.sample()
-          const expected = faker.animal.cow()
+          const expected = faker.number.bigInt()
 
-          const serializedData = defaultSerializer.serialize(expected)
+          const serializedData = defaultSerializer.serialize(
+            expected,
+            serializeOptions,
+          )
+
           localStorage.setItem(key, serializedData)
 
           // Act
