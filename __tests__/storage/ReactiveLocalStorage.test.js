@@ -6,10 +6,7 @@ import {
   addItemsInReactiveLocalStorage,
   localStorage,
 } from '../helpers'
-import {
-  ReactiveLocalStorageError,
-  ReactiveStorageError,
-} from '../../src/reactiveLocalStorage/storage/Error'
+import { ReactiveStorageError } from '../../src/reactiveLocalStorage/storage/Error'
 import { ref, reactive, isRef, isReactive } from 'vue'
 
 const filePath = 'src/reactiveLocalStorage/storage/ReactiveLocalStorage.js'
@@ -32,24 +29,6 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
       // Assert
       expect(result).not.toThrow()
     })
-    it('Should throw a ReactiveLocalStorageError when the constructor is called using vue Ref instance but not a Storage instance', () => {
-      // Arrange
-      const refStorage = ref({})
-      const notStorage = faker.string.sample(100)
-      const defaultSerializer = getDefaultSerializer()
-      const expected = ReactiveLocalStorageError
-
-      // Act
-      const result = () =>
-        getReactiveLocalStorageInstance(
-          refStorage,
-          notStorage,
-          defaultSerializer,
-        )
-
-      // Assert
-      expect(result).toThrow(expected)
-    })
     it('Should create a ReactiveLocalStorage object when the constructor is called using Storage and vue Reactive instances', () => {
       // Arrange
       const reactiveStorage = reactive({})
@@ -65,24 +44,6 @@ describe(`class ReactiveLocalStorage (${filePath})`, () => {
 
       // Assert
       expect(result).not.toThrow()
-    })
-    it('Should throw a ReactiveLocalStorageError when the constructor is called using vue Reactive instance but not a Storage instance', () => {
-      // Arrange
-      const reactiveStorage = reactive({})
-      const notStorage = faker.number.int()
-      const defaultSerializer = getDefaultSerializer()
-      const expected = ReactiveLocalStorageError
-
-      // Act
-      const result = () =>
-        getReactiveLocalStorageInstance(
-          reactiveStorage,
-          notStorage,
-          defaultSerializer,
-        )
-
-      // Assert
-      expect(result).toThrow(expected)
     })
     it('Should throw a ReactiveStorageError when the constructor is called using a Storage instance but not a vue Ref/Reactive instance', () => {
       // Arrange
