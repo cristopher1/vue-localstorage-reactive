@@ -4,12 +4,10 @@
   "description": "Wrapper to use localStorage reactive in Vue 3",
   "main": "./dist/cjs/index.cjs",
   "type": "commonjs",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/types/esm/index.d.mts",
-        "default": "./dist/esm/index.mjs"
-      },
+      "import": "./dist/esm/index.mjs",
       "require": "./dist/cjs/index.cjs"
     }
   },
