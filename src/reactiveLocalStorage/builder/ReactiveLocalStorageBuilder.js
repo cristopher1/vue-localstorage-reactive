@@ -4,12 +4,12 @@ import { ref } from 'vue'
 
 export class ReactiveLocalStorageBuilder {
   #reactiveStorage
-  #webStorage
+  #localStorage
   #serializer
 
   constructor() {
     this.#reactiveStorage = ref({})
-    this.#webStorage = window.localStorage
+    this.#localStorage = window.localStorage
     this.#serializer = SerializerFactory.createDefaultSerializer()
   }
 
@@ -17,8 +17,8 @@ export class ReactiveLocalStorageBuilder {
     this.#reactiveStorage = reactiveStorage
   }
 
-  setWebStorage(webStorage) {
-    this.#webStorage = webStorage
+  setlocalStorage(localStorage) {
+    this.#localStorage = localStorage
   }
 
   setSerializer(serializer) {
@@ -28,7 +28,7 @@ export class ReactiveLocalStorageBuilder {
   build() {
     return new ReactiveLocalStorage(
       this.#reactiveStorage,
-      this.#webStorage,
+      this.#localStorage,
       this.#serializer,
     )
   }
