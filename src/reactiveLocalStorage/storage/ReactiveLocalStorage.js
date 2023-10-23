@@ -3,11 +3,17 @@ import { ReactiveStorage } from './ReactiveStorage'
 export class ReactiveLocalStorage extends ReactiveStorage {
   #localStorage
   #serializer
+  #loadDataFromLocalStorageParameters
 
   constructor(reactiveStorage, localStorage, serializer) {
     super(reactiveStorage)
     this.#localStorage = localStorage
     this.#serializer = serializer
+    this.#loadDataFromLocalStorageParameters = {}
+  }
+
+  setLoadDataFromLocalStorageParameters(parameters) {
+    this.#loadDataFromLocalStorageParameters = parameters
   }
 
   /**
@@ -119,7 +125,8 @@ export class ReactiveLocalStorage extends ReactiveStorage {
    * @param {object} parseOptions The options used by the parse method
    *   implemented by the serializer object.
    */
-  loadDataFromLocalStorage(parseOptions = {}) {
+  loadDataFromLocalStorage() {
+    const parseOptions = this.#loadDataFromLocalStorageParameters
     const localStorage = this.#localStorage
     const length = localStorage.length
     for (let index = 0; index < length; ++index) {
