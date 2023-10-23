@@ -5,7 +5,7 @@ import {
   addItemsInReactiveLocalStorage,
   getDefaultSerializer,
 } from './helpers'
-import reactiveLocalStoragePlugin from '../src/index'
+import { createReactiveLocalStorageInstaller } from '../src/index'
 import { ReactiveLocalStorage } from '../src/reactiveLocalStorage/storage/ReactiveLocalStorage'
 import { isRef, isReactive } from 'vue'
 
@@ -23,10 +23,12 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
       it('Should install plugin with default parameters', () => {
         // Arrange
         const app = createApp()
+        const reactiveLocalStorageInstaller =
+          createReactiveLocalStorageInstaller()
         const expected = ReactiveLocalStorage
 
         // Act
-        reactiveLocalStoragePlugin.install(app)
+        reactiveLocalStorageInstaller.install(app)
 
         // Assert
         const result = app.config.globalProperties.$reactiveLocalStorage
@@ -43,8 +45,10 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
         defaultSerializer = getDefaultSerializer()
 
         const app = createApp()
+        const reactiveLocalStorageInstaller =
+          createReactiveLocalStorageInstaller()
 
-        reactiveLocalStoragePlugin.install(app)
+        reactiveLocalStorageInstaller.install(app)
 
         reactiveLocalStorage = app.config.globalProperties.$reactiveLocalStorage
       })
@@ -380,10 +384,12 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
           useRemoveItemFromLocalStorage: true,
           useAddItemFromLocalStorage: true,
         }
+        const reactiveLocalStorageInstaller =
+          createReactiveLocalStorageInstaller()
         const expected = ReactiveLocalStorage
 
         // Act
-        reactiveLocalStoragePlugin.install(app, options)
+        reactiveLocalStorageInstaller.install(app, options)
 
         // Assert
         const result = app.config.globalProperties.$reactiveLocalStorage
@@ -406,8 +412,10 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
           useAddItemFromLocalStorage: true,
           serializer: defaultSerializer,
         }
+        const reactiveLocalStorageInstaller =
+          createReactiveLocalStorageInstaller()
 
-        reactiveLocalStoragePlugin.install(app, options)
+        reactiveLocalStorageInstaller.install(app, options)
 
         reactiveLocalStorage = app.config.globalProperties.$reactiveLocalStorage
       })
