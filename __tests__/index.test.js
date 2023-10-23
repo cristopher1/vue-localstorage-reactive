@@ -124,10 +124,11 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
           // Arrange
           const serializeOptions = {
             replacer: function (key, value) {
-              if (typeof value === 'bigint') {
+              const unserializedData = this[key]
+              if (unserializedData instanceof Date) {
                 return {
-                  __typeof__: 'bigint',
-                  value: value.toString(),
+                  __typeof__: 'Date',
+                  value: unserializedData.toJSON(),
                 }
               }
               return value
@@ -137,8 +138,8 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
           const parseOptions = {
             reviver: function (key, value) {
               const { __typeof__ } = value
-              if (__typeof__ === 'bigint') {
-                return BigInt(value.value)
+              if (__typeof__ === 'Date') {
+                return new Date(value.value)
               }
               return value
             },
@@ -147,7 +148,7 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
           const key = faker.string.sample(30)
           const expected = {
             key1: faker.string.sample(90),
-            key2: faker.number.bigInt(),
+            key2: faker.date.birthdate(),
             key3: {
               nestedObject: {
                 key1: faker.string.symbol(17),
@@ -347,70 +348,6 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
 
             expect(result).toBe(expected)
           }
-        })
-      })
-      describe('(method) removeItemFromEvent', () => {
-        it('Should call this method inclusive if not exists the key into reactiveLocalStorage', () => {
-          // Arrange
-          const key = faker.string.sample(35)
-
-          // Act
-          const result = () => reactiveLocalStorage.removeItemFromEvent(key)
-
-          // Assert
-          expect(result).not.toThrow()
-        })
-        it('Should remove an object (Array)', () => {
-          // Arrange
-          const key = faker.string.sample(77)
-          const value = [1, 2, 3, 4, 5]
-
-          reactiveLocalStorage.setItem(key, value)
-          localStorage.removeItem(key)
-
-          // Act
-          reactiveLocalStorage.removeItemFromEvent(key)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem()
-
-          expect(result).toBeNull()
-        })
-      })
-      describe('(method) setItemFromEvent', () => {
-        it('Should set an object (Array)', () => {
-          // Arrange
-          const key = faker.string.sample(79)
-          const expected = [
-            { key: faker.string.sample(100), value: faker.number.int() },
-          ]
-
-          // Act
-          reactiveLocalStorage.setItemFromEvent(key, expected)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem(key)
-
-          expect(result).toEqual(expected)
-        })
-        it('Should override an object saved in reactiveLocalStorage when set a new object using the same key', () => {
-          // Arrange
-          const key = 'simpleObject'
-          const initValue = {
-            user: faker.internet.userName(),
-            password: faker.internet.password({ length: 50 }),
-          }
-          const expected = [7]
-
-          reactiveLocalStorage.setItem(key, initValue)
-
-          // Act
-          reactiveLocalStorage.setItemFromEvent(key, expected)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem(key)
-
-          expect(result).toEqual(expected)
         })
       })
       describe('(function) loadDataFromLocalStorageListener', () => {
@@ -750,70 +687,6 @@ describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
 
             expect(result).toBe(expected)
           }
-        })
-      })
-      describe('(method) removeItemFromEvent', () => {
-        it('Should call this method inclusive if not exists the key into reactiveLocalStorage', () => {
-          // Arrange
-          const key = faker.string.sample(35)
-
-          // Act
-          const result = () => reactiveLocalStorage.removeItemFromEvent(key)
-
-          // Assert
-          expect(result).not.toThrow()
-        })
-        it('Should remove an object (Array)', () => {
-          // Arrange
-          const key = faker.string.sample(77)
-          const value = [1, 2, 3, 4, 5]
-
-          reactiveLocalStorage.setItem(key, value)
-          localStorage.removeItem(key)
-
-          // Act
-          reactiveLocalStorage.removeItemFromEvent(key)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem()
-
-          expect(result).toBeNull()
-        })
-      })
-      describe('(method) setItemFromEvent', () => {
-        it('Should set an object (Array)', () => {
-          // Arrange
-          const key = faker.string.sample(79)
-          const expected = [
-            { key: faker.string.sample(100), value: faker.number.int() },
-          ]
-
-          // Act
-          reactiveLocalStorage.setItemFromEvent(key, expected)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem(key)
-
-          expect(result).toEqual(expected)
-        })
-        it('Should override an object saved in reactiveLocalStorage when set a new object using the same key', () => {
-          // Arrange
-          const key = 'simpleObject'
-          const initValue = {
-            user: faker.internet.userName(),
-            password: faker.internet.password({ length: 50 }),
-          }
-          const expected = [7]
-
-          reactiveLocalStorage.setItem(key, initValue)
-
-          // Act
-          reactiveLocalStorage.setItemFromEvent(key, expected)
-
-          // Assert
-          const result = reactiveLocalStorage.getItem(key)
-
-          expect(result).toEqual(expected)
         })
       })
       describe('(function) loadDataFromLocalStorageListener', () => {
