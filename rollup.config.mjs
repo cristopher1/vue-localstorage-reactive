@@ -23,15 +23,15 @@ const MJS_FILE = {
   outputDir: 'esm',
   babelEnvName: 'buildESmodules',
 }
-const DMTS_FILE = {
-  extension: 'd.mts',
+const DTS_FILE = {
+  extension: 'd.ts',
   format: 'es',
   name: 'index',
-  outputDir: 'types/esm',
+  outputDir: 'types',
 }
 
 // input files
-const INPUT_SRC_FILE = 'src/index.js'
+const INPUT_SRC_FILE = 'src/main.js'
 const INPUT_DTS_FILE = 'dist/tmp/types/index.d.ts'
 
 // transpiled files
@@ -40,7 +40,7 @@ const OUTPUT_CJS_FILE = getOutputFile(BASE_DIR, CJS_FILE)
 const OUTPUT_MJS_FILE = getOutputFile(BASE_DIR, MJS_FILE)
 
 // type declaration file
-const OUTPUT_DTS_FILE = getOutputFile(BASE_DIR, DMTS_FILE)
+const OUTPUT_DTS_FILE = getOutputFile(BASE_DIR, DTS_FILE)
 
 // getBabelOutputPlugin configuration
 const BABEL_CONFIG_FILE = path.resolve('.', 'babel.config.json')
@@ -80,7 +80,7 @@ export default defineConfig([
     output: [
       {
         file: OUTPUT_DTS_FILE,
-        format: DMTS_FILE.format,
+        format: DTS_FILE.format,
       },
     ],
     plugins: [dts()],
