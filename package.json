@@ -46,7 +46,10 @@
     "vue",
     "reactive",
     "localStorage",
-    "plugin"
+    "plugin",
+    "wrapper",
+    "storage",
+    "vue3"
   ],
   "author": "Cristopher Luis Jiménez Meza",
   "license": "MIT",
