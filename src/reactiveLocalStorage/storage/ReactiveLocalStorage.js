@@ -50,6 +50,28 @@ export class ReactiveLocalStorage extends ReactiveStorage {
    * Sets the parseOptions that will be used to serialize.parse method that will
    * be called into loadDataFromLocalStorage method.
    *
+   * @example
+   *   // Obtains an instance of reactiveLocalStorage, in this case will be used a
+   *   // reactiveLocalStorage with a default serializer.
+   *
+   *   const parseOptions = {
+   *     reviver: function (key, value) {
+   *       const { __typeof__ } = value
+   *       if (__typeof__ === 'Date') {
+   *         return new Date(value.value)
+   *       }
+   *       return value
+   *     },
+   *   }
+   *
+   *   reactiveLocalStorage.setLoadDataFromLocalStorageParameters(
+   *     parseOptions,
+   *   )
+   *
+   *   // When the loadDataFromLocalStorage method is called, it will
+   *   // use the parseOptions setted by setLoadDataFromLocalStorageParameters
+   *   // method.
+   *
    * @param {object} parameters The parameters used to parse data when the
    *   loadDataFromLocalStorage method is called.
    */
