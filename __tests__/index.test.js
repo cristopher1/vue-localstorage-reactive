@@ -5,7 +5,7 @@ import {
   addItemsInReactiveLocalStorage,
   getDefaultSerializer,
 } from './helpers'
-import { createReactiveLocalStorageInstaller } from '../src/index'
+import { createReactiveLocalStorageInstaller } from '../src/main'
 import { ReactiveLocalStorage } from '../src/reactiveLocalStorage/storage/ReactiveLocalStorage'
 import { isRef, isReactive } from 'vue'
 
@@ -15,7 +15,7 @@ const createApp = () => ({
   },
 })
 
-const filePath = 'src/index.js'
+const filePath = 'src/main.js'
 
 describe(`export default ReactiveLocalStorageInstaller (${filePath})`, () => {
   describe('use the installer with default parameters', () => {
