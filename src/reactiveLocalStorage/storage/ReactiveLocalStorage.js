@@ -37,7 +37,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   /**
    * Returns the reactiveStorage object used by reactiveLocalStorage instance.
    *
-   * @returns {any} The reactiveStorage object used by reactiveLocalStorage.
+   * @returns {any} The reactiveStorage object used by reactiveLocalStorage
    *   instance.
    * @override
    * @readonly

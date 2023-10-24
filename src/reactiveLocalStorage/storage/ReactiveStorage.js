@@ -22,11 +22,23 @@ export class ReactiveStorage {
     return isRef(reactiveStorage) ? reactiveStorage.value : reactiveStorage
   }
 
+  /**
+   * Obtains the number of elements saved.
+   *
+   * @returns {number} Number of elements saved.
+   * @readonly
+   */
   get length() {
     const reactiveStorage = this.#obtainReactiveStorageValue()
     return Object.keys(reactiveStorage).length
   }
 
+  /**
+   * Returns the reactiveStorage object used.
+   *
+   * @returns {any} The reactiveStorage object used.
+   * @readonly
+   */
   get reactiveStorage() {
     return this.#reactiveStorage
   }
@@ -53,6 +65,7 @@ export class ReactiveStorage {
     }
   }
 
+  /** Removes all pairs key/value. */
   clear() {
     const reactiveStorage = this.#obtainReactiveStorageValue()
     for (const key in reactiveStorage) {
