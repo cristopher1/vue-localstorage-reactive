@@ -49,7 +49,7 @@
     "plugin",
     "wrapper",
     "storage",
-    "vue3"
+    "reactiveLocalStorage"
   ],
   "author": "Cristopher Luis Jiménez Meza",
   "license": "MIT",
