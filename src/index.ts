@@ -1,4 +1,2 @@
-import { createReactiveLocalStorageInstaller } from './main'
-export * from './global'
-
-export { createReactiveLocalStorageInstaller }
+export * from './global.ts'
+export { createReactiveLocalStorageInstaller } from './main'
