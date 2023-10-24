@@ -5,11 +5,45 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   #serializer
   #loadDataFromLocalStorageParameters
 
+  /**
+   * @param {ReactiveStorage} reactiveStorage An instance of reactiveStorage
+   *   class.
+   * @param {Storage} localStorage The localStorage object.
+   * @param {object} serializer An object used to serialize and unserialize
+   *   data.
+   * @param {(value: any, serializeOptions?: object) => string} serializer.serialize
+   *   A function used to serialize data.
+   * @param {(value: string, parseOptions?: object) => any} serializer.parse A
+   *   function used to unserialize data.
+   */
   constructor(reactiveStorage, localStorage, serializer) {
     super(reactiveStorage)
     this.#localStorage = localStorage
     this.#serializer = serializer
     this.#loadDataFromLocalStorageParameters = {}
+  }
+
+  /**
+   * Obtains the number of elements saved in reactiveLocalStorage.
+   *
+   * @returns {number} Number of elements saved in reactiveLocalStorage.
+   * @override
+   * @readonly
+   */
+  get length() {
+    return super.length
+  }
+
+  /**
+   * Returns the reactiveStorage object used by reactiveLocalStorage instance.
+   *
+   * @returns {any} The reactiveStorage object used by reactiveLocalStorage.
+   *   instance.
+   * @override
+   * @readonly
+   */
+  get reactiveStorage() {
+    return super.reactiveStorage
   }
 
   /**
@@ -24,29 +58,11 @@ export class ReactiveLocalStorage extends ReactiveStorage {
   }
 
   /**
-   * Obtains the number of elements saved in reactiveLocalStorage.
-   *
-   * @returns {number} Number Of elements saved in reactiveLocalStorage.
-   */
-  get length() {
-    return super.length
-  }
-
-  /**
-   * Returns the reactiveStorage object used by reactiveLocalStorage instance.
-   *
-   * @returns {any} The reactiveStorage object used by reactiveLocalStorage
-   *   instance.
-   */
-  get reactiveStorage() {
-    return super.reactiveStorage
-  }
-
-  /**
    * Returns the key in nth position into reactiveLocalStorage.
    *
    * @param {number} index The index of a key in the reactiveLocalStorage.
    * @returns {string} The key in nth position.
+   * @override
    */
   key(index) {
     return super.key(index)
@@ -93,6 +109,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
    * @param {object} parseOptions An object that contains the options that will
    *   be passed to serializer.parse method.
    * @returns {any} The parsed key's value.
+   * @override
    */
   getItem(key, parseOptions = {}) {
     let value = super.getItem(key)
@@ -147,6 +164,7 @@ export class ReactiveLocalStorage extends ReactiveStorage {
    * @param {any} item The key's value to save.
    * @param {object} serializeOptions An object that contains the options that
    *   will be passed to serializer.serialize method.
+   * @override
    */
   setItem(key, item, serializeOptions = {}) {
     super.setItem(key, item)
@@ -158,13 +176,18 @@ export class ReactiveLocalStorage extends ReactiveStorage {
    * Removes the pair key/value from reactiveLocalStorage.
    *
    * @param {string} key The key to remove from reactiveLocalStorage.
+   * @override
    */
   removeItem(key) {
     super.removeItem(key)
     this.#localStorage.removeItem(key)
   }
 
-  /** Removes all pairs key/value into reactiveLocalStorage. */
+  /**
+   * Removes all pairs key/value into reactiveLocalStorage.
+   *
+   * @override
+   */
   clear() {
     super.clear()
     this.#localStorage.clear()
