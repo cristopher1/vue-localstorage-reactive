@@ -14,7 +14,53 @@
 
 > Wrapper to use localStorage reactive in Vue 3
 
-### **Note: This plugin only can used in applications that contains only an unique instance of vue application created by createApp function.**
+### Note: All reactiveLocalStorage object created by this plugin uses the same localStorage object, therefore when you creates a vue project with many instance of application (created by createApp function) and you installs this plugin in two or more instances, it will occur side effects when the setItem or removeItem methods are called using the same key in differents instance of the reactiveLocalStorage object.
+
+Example:
+
+```js
+import { createReactiveLocalStorageInstaller } from '@cljimenez/vue-localstorage-reactive'
+
+import { createApp } from 'vue'
+
+import App from './App.vue'
+
+const app1 = createApp(App)
+const app2 = createApp(App)
+
+app1.use(createReactiveLocalStorageInstaller())
+app2.use(createReactiveLocalStorageInstaller())
+
+// Saves the user object into localStorage using the pair 'user' / objectUser
+app1.config.globalProperties.$reactiveLocalStorage.setItem('user', objectUser)
+
+// Saves the user object into localStorage using the pair 'user' / objectUser. The objectUser saved by app1 is overwritten by app2.
+app2.config.globalProperties.$reactiveLocalStorage.setItem('user', objectUser)
+```
+
+### If you want use this plugin in many application instance, the keys used by the differents application instances should be unique.
+
+Example:
+
+```js
+import { createReactiveLocalStorageInstaller } from '@cljimenez/vue-localstorage-reactive'
+
+import { createApp } from 'vue'
+
+import App from './App.vue'
+
+const app1 = createApp(App)
+const app2 = createApp(App)
+
+app1.use(createReactiveLocalStorageInstaller())
+app2.use(createReactiveLocalStorageInstaller())
+
+// Saves the user object into localStorage using the pair 'app1_user' / objectUser
+app1.config.globalProperties.$reactiveLocalStorage.setItem('app1_user', objectUser)
+
+// Saves the user object into localStorage using the pair 'app2_user' / objectUser.
+app2.config.globalProperties.$reactiveLocalStorage.setItem('app2_user', objectUser)
+```
 
 ### 🏠 [Homepage](https://github.com/cristopher1/vue-localstorage-reactive#readme)
 
@@ -38,6 +84,8 @@ npm install @cljimenez/vue-localstorage-reactive
 
    app.use(createReactiveLocalStorageInstaller())
    ```
+
+   **Note: Always you should create a new Installer using createReactiveLocalStorageInstaller when you use the app.use method**
 
  - ### Install options.
    When you installs this plugin using:
@@ -87,6 +135,14 @@ npm install @cljimenez/vue-localstorage-reactive
    - `(getter) reactiveStorage`: Returns the reactiveStorage object used by reactiveLocalStorage instance.
    - `(method) setLoadDataFromLocalStorageParameters(parameters)`: Sets the parseOptions that will be used to serialize.parse method that will be called into loadDataFromLocalStorage method.
    - `(method) loadDataFromLocalStorage()`: This method must be used into listener object that listens an event. Sets the data from localStorage into reactiveLocalStorage when the listened event is fired.
+     **When the @cljimenez/vue-localstorage-reactive is installed, it is added a loadDataFromLocalStorageListener that is used when the load event is fired by the window object to load the initial data from
+     localStorage into reactiveStorage. The loadDataFromLocalStorageListener uses the loadDataFromLocalStorage method.**
+
+     ```js
+     return function loadDataFromLocalStorageListener() {
+      reactiveLocalStorage.loadDataFromLocalStorage()
+     }
+     ```
 
   - ### Use the composition API:
 
@@ -105,6 +161,185 @@ npm install @cljimenez/vue-localstorage-reactive
     app.use(createReactiveLocalStorageInstaller())
 
     app.provide('reactiveLocalStorage', app.config.globalProperties.$reactiveLocalStorage)
+    ```
+    ```vue
+    // you can use the inject function to access to the reactiveLocalStorage object, for example in a MainNav.vue
+
+    <script setup>
+    import { inject, computed} from 'vue'
+    import { RouterLink } from 'vue-router'
+    import jwt_decode from 'jwt-decode'
+    
+    const urlApp = inject('urlApp')
+    const apis = inject('apis')
+    const reactiveLocalStorage = inject('reactiveLocalStorage')
+    
+    const home = {
+      message: 'Inicio',
+      url: { name: urlApp.home.name },
+    }
+    const signUp = {
+      message: 'Registrarse',
+      url: { name: urlApp.signUp.name, hash: urlApp.signUp.hash },
+    }
+    const contact = {
+      message: 'Contacto',
+      url: { name: urlApp.contact.name },
+    }
+    const characteristics = {
+      message: 'Características',
+      url: { name: urlApp.characteristics.name },
+    }
+    const logout = {
+      message: 'Cerrar sesión',
+      url: { name: urlApp.logout.name },
+    }
+    
+    const thereIsUser = computed(() => {
+      return reactiveLocalStorage.getItem(apis.extractorCaracteristicas.storage.accessTokenItem.name)
+    })
+    
+    const obtainInfoUser = computed(() => {
+      const accessToken = reactiveLocalStorage.getItem(
+        apis.extractorCaracteristicas.storage.accessTokenItem.name,
+      )
+      if (accessToken) {
+        return jwt_decode(accessToken).user_id
+      }
+      return null
+    })
+    </script>
+    
+    <template>
+      <!-- Navigation-->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container px-5">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li v-if="thereIsUser" class="nav-item">
+                <span class="nav-link">Registrado como: {{ obtainInfoUser }}</span>
+              </li>
+              <li v-if="thereIsUser" class="nav-item">
+                <RouterLink class="nav-link" :to="characteristics.url">
+                  {{ characteristics.message }}
+                </RouterLink>
+              </li>
+              <li v-if="!thereIsUser" class="nav-item">
+                <RouterLink class="nav-link" :to="home.url"> {{ home.message }} </RouterLink>
+              </li>
+              <li v-if="!thereIsUser" class="nav-item">
+                <RouterLink class="nav-link" :to="signUp.url"> {{ signUp.message }} </RouterLink>
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link" :to="contact.url"> {{ contact.message }} </RouterLink>
+              </li>
+              <li v-if="thereIsUser" class="nav-item">
+                <RouterLink class="nav-link" :to="logout.url"> {{ logout.message }} </RouterLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </template>
+    ```
+    ```js
+    // also you can use the reactiveLocalStorage object with vue-router using the inject function.
+
+    import { createRouter, createWebHistory } from 'vue-router'
+    import { inject } from 'vue'
+    import { urlApp } from '../urlApp'
+    import { apis } from '../apis'
+    import HomeView from '../views/HomeView.vue'
+    
+    const logout = (to, from, next) => {
+      const reactiveLocalStorage = inject('reactiveLocalStorage')
+      reactiveLocalStorage.removeItem(apis.extractorCaracteristicas.storage.accessTokenItem.name)
+      reactiveLocalStorage.removeItem(apis.extractorCaracteristicas.storage.refreshTokenItem.name)
+      next({ name: urlApp.home.name })
+    }
+    
+    const isAuthenticated = (to, from, next) => {
+      const reactiveLocalStorage = inject('reactiveLocalStorage')
+      if (reactiveLocalStorage.getItem(apis.extractorCaracteristicas.storage.accessTokenItem.name)) {
+        next()
+      } else {
+        next({ name: urlApp.home.name })
+      }
+    }
+    
+    const isNotAuthenticated = (to, from, next) => {
+      const reactiveLocalStorage = inject('reactiveLocalStorage')
+      if (!reactiveLocalStorage.getItem(apis.extractorCaracteristicas.storage.accessTokenItem.name)) {
+        next()
+      } else {
+        next({ name: urlApp.principal.name })
+      }
+    }
+    
+    const router = createRouter({
+      history: createWebHistory(import.meta.env.BASE_URL),
+      routes: [
+        {
+          path: urlApp.home.path,
+          name: urlApp.home.name,
+          beforeEnter: [isNotAuthenticated],
+          component: HomeView,
+        },
+        {
+          path: urlApp.contact.path,
+          name: urlApp.contact.name,
+          component: () => import('../views/ContactoView.vue'),
+        },
+        {
+          path: urlApp.information.path,
+          name: urlApp.information.name,
+          beforeEnter: [isNotAuthenticated],
+          component: () => import('../views/DescripcionView.vue'),
+        },
+        {
+          path: urlApp.login.path,
+          name: urlApp.login.name,
+          beforeEnter: [isNotAuthenticated],
+          component: () => import('../views/LoginView.vue'),
+        },
+        {
+          path: urlApp.principal.path,
+          name: urlApp.principal.name,
+          beforeEnter: [isAuthenticated],
+          component: () => import('../views/PrincipalView.vue'),
+        },
+        {
+          path: urlApp.logout.path,
+          name: urlApp.logout.name,
+          beforeEnter: [isAuthenticated, logout],
+        },
+      ],
+      scrollBehavior(to, from, savedPosition) {
+        if (to.hash) {
+          return {
+            el: to.hash,
+            behavior: 'smooth',
+          }
+        } else if (savedPosition) {
+          return savedPosition
+        } else {
+          return { left: 0, top: 0 }
+        }
+      },
+    })
+    
+    export default router
     ```
 
 ## Author
