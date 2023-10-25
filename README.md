@@ -64,15 +64,27 @@ app2.config.globalProperties.$reactiveLocalStorage.setItem('app2_user', objectUs
 
 ### 🏠 [Homepage](https://github.com/cristopher1/vue-localstorage-reactive#readme)
 
-## Install
+### [Index](#index)
+
+- [Install](#install)
+- [How to use?](#how-to-use?)
+  - [Install the plugin](#install)
+  - [Install options](#install-options)
+  - [About the ReactiveLocalStorage methods](#about-reactive-local-storage-methods)
+  - [Use the composition API](#composition-api)
+- [Author](#author)
+- [Contributing](#contributing)
+- [License](#license)
+
+## <a id="install"></a> Install
 
 ```sh
 npm install @cljimenez/vue-localstorage-reactive
 ```
 
-## How to use?
+## <a id="how-to-use?"></a> How to use?
 
- - ### Install the plugin.
+ - ### <a id="install"></a> Install the plugin.
    ```js
    import { createReactiveLocalStorageInstaller } from '@cljimenez/vue-localstorage-reactive'
 
@@ -87,7 +99,7 @@ npm install @cljimenez/vue-localstorage-reactive
 
    **Note: Always you should create a new Installer using createReactiveLocalStorageInstaller when you use the app.use method**
 
- - ### Install options.
+ - ### <a id="install-options"></a> Install options.
    When you installs this plugin using:
 
    ```js
@@ -120,7 +132,7 @@ npm install @cljimenez/vue-localstorage-reactive
 
       You can define your own serializer using a wrapper that implements the serialize and parse methods or you can use other serializer, for example [@cljimenez/json-serializer-core](https://www.npmjs.com/package/@cljimenez/json-serializer-core) with [@cljimenez/json-serializer-base-serializers](https://www.npmjs.com/package/@cljimenez/json-serializer-base-serializers).
 
- - ### About the ReactiveLocalStorage methods
+ - ### <a id="about-reactive-local-storage-methods"></a> About the ReactiveLocalStorage methods
    The `ReactiveLocalStorage` object provides an interface similar to the Storage interface, this methods are:
 
    - `(getter) length`: Obtains the number of elements saved in reactiveLocalStorage.
@@ -144,7 +156,7 @@ npm install @cljimenez/vue-localstorage-reactive
      }
      ```
 
-  - ### Use the composition API:
+  - ### <a id="composition-api"></a> Use the composition API:
 
     You can use the provide / inject functions.
 
@@ -342,17 +354,17 @@ npm install @cljimenez/vue-localstorage-reactive
     export default router
     ```
 
-## Author
+## <a id="author"></a> Author
 
 👤 **Cristopher Jiménez**
 
 - Github: [@cristopher1](https://github.com/cristopher1)
 
-## 🤝 Contributing
+## <a id="contributing"></a> 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/cristopher1/vue-localstorage-reactive/issues).
 
-## 📝 License
+## <a id="license"></a> 📝 License
 
 Copyright © 2023 [Cristopher Jiménez](https://github.com/cristopher1).<br />
 This project is [MIT](https://github.com/cristopher1/vue-localstorage-reactive/blob/master/LICENSE) licensed.
