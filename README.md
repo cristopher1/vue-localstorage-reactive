@@ -139,16 +139,16 @@ npm install @cljimenez/vue-localstorage-reactive
     }
     ```
 
-    You can define your own serializer wrapping an object that serializes and unserializes data using the structure:
+    You can define your own serializer wrapping an object or static methods that serializes and unserializes data using the structure:
 
     ```js
     {
       serialize: (value, options) => {
-        // const {option1, option2, ... etc}
+        // const {option1, option2, ... etc} = options
         // return objectThatSerializesData.methodThatSerializesData(value, option1, option2, ... etc)
       },
       parse: (value, options) => {
-        // const {option1, option2, ... etc}
+        // const {option1, option2, ... etc} = options
         // return objectThatUnserializesData.methodThatUnserializesData(value, option1, option2, ... etc)
       }
     }
