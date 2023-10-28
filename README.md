@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to @cljimenez/vue-localstorage-reactive 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.1-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/cristopher1/vue-localstorage-reactive#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
@@ -139,7 +139,22 @@ npm install @cljimenez/vue-localstorage-reactive
     }
     ```
 
-    You can define your own serializer using a wrapper that implements the serialize and parse methods or you can use other serializer, for example [@cljimenez/json-serializer-core](https://www.npmjs.com/package/@cljimenez/json-serializer-core) with [@cljimenez/json-serializer-base-serializers](https://www.npmjs.com/package/@cljimenez/json-serializer-base-serializers).
+    You can define your own serializer wrapping an object or static methods that serializes and unserializes data using the structure:
+
+    ```js
+    {
+      serialize: (value, options) => {
+        // const {option1, option2, ... etc} = options
+        // return objectThatSerializesData.methodThatSerializesData(value, option1, option2, ... etc)
+      },
+      parse: (value, options) => {
+        // const {option1, option2, ... etc} = options
+        // return objectThatUnserializesData.methodThatUnserializesData(value, option1, option2, ... etc)
+      }
+    }
+    ```
+
+    You can use serializers like JSON with replacer and reviver functions, [@cljimenez/json-serializer-core](https://www.npmjs.com/package/@cljimenez/json-serializer-core) with [@cljimenez/json-serializer-base-serializers](https://www.npmjs.com/package/@cljimenez/json-serializer-base-serializers), others.
 
 - ### <a id="about-reactive-local-storage-methods"></a> About the ReactiveLocalStorage methods
 

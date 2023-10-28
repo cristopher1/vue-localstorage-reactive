@@ -2,10 +2,10 @@ import { ReactiveLocalStorageInstaller } from './reactiveLocalStorage/installer/
 import { ReactiveLocalStorageBuilder } from './reactiveLocalStorage/builder/ReactiveLocalStorageBuilder'
 
 /**
- * Returns the installer that contains the install method.
+ * Returns the installer object used to install the plugin.
  *
- * @returns {ReactiveLocalStorageInstaller} The installer that contains the
- *   install method.
+ * @returns {ReactiveLocalStorageInstaller} The installer object used to install
+ *   the plugin.
  */
 export function createReactiveLocalStorageInstaller() {
   const reactiveLocalStorageBuilder = new ReactiveLocalStorageBuilder()
